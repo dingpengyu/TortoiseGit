@@ -44,14 +44,14 @@ bool CLogDlgFilter::operator()(GitRevLoglist* pRev, CGitLogListBase* loglist, co
 	}
 	if (GetSelectedFilters() & LOGFILTER_AUTHORS)
 	{
-		scratch += pRev->GetAuthorName();
+		scratch += pRev->GetAuthorName();//TODO
 		scratch += L'\n';
 		scratch += pRev->GetCommitterName();
 		scratch += L'\n';
 	}
 	if (GetSelectedFilters() & LOGFILTER_EMAILS)
 	{
-		scratch += pRev->GetAuthorEmail();
+		scratch += pRev->GetAuthorEmail();//TODO
 		scratch += L'\n';
 		scratch += pRev->GetCommitterEmail();
 		scratch += L'\n';

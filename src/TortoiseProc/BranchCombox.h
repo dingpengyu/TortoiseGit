@@ -138,13 +138,14 @@ protected:
 			return;
 
 		GitRev rev;
-		if (rev.GetCommit(text))
+		if (rev.GetCommit(text))//TODO
 		{
 			MessageBox(nullptr, rev.GetLastErr(), L"TortoiseGit", MB_ICONERROR);
 			return;
 		}
+		rev.ApplyMailmap();
 
-		CString tooltip;
+		CString tooltip;//TODO
 		tooltip.Format(L"%s: %s\n%s: %s <%s>\n%s: %s\n%s:\n%s\n%s",
 						static_cast<LPCTSTR>(CString(MAKEINTRESOURCE(IDS_LOG_REVISION))),
 						static_cast<LPCTSTR>(rev.m_CommitHash.ToString()),

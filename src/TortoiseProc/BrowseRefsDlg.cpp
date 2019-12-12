@@ -474,7 +474,7 @@ void CBrowseRefsDlg::Refresh(CString selectRef)
 		treeLeaf.m_csUpstream = ref.m_UpstreamRef;
 		CGit::GetShortName(treeLeaf.m_csUpstream, treeLeaf.m_csUpstream, L"refs/remotes/");
 		treeLeaf.m_csSubject = ref.GetSubject();
-		treeLeaf.m_csAuthor = ref.GetAuthorName();
+		treeLeaf.m_csAuthor = ref.GetAuthorName();//TODO
 		treeLeaf.m_csDate = ref.GetAuthorDate();
 		treeLeaf.m_csDescription = ref.m_Description;
 	}

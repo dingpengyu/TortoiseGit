@@ -244,6 +244,7 @@ void CPropertiesWnd::UpdateProperties(GitRevLoglist* pRev)
 			if (pRev->GetParentFromHash(pRev->m_CommitHash))
 				MessageBox(pRev->GetLastErr(), L"TortoiseGit", MB_ICONERROR);
 		}
+		// TODO
 		CString hash = pRev->m_CommitHash.ToString();
 		m_CommitHash->SetValue(hash);
 		m_AuthorName->SetValue(pRev->GetAuthorName());

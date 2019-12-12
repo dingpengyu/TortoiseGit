@@ -209,13 +209,14 @@ void CTortoiseGitBlameData::ParseBlameOutput(BYTE_VECTOR &data, CGitHashMap & Ha
 		pos = lineEnd + 1;
 	}
 
+	CGitMailmap mailmap;
 	for (const auto& hash2 : hashes)
 	{
 		CString err;
-		GitRev* pRev = GetRevForHash(HashToRev, hash2, &err);
+		GitRev* pRev = GetRevForHash(HashToRev, hash2, mailmap, &err);
 		if (pRev)
 		{
-			authors.push_back(pRev->GetAuthorName());
+			// TODO
 			dates.push_back(CLoglistUtils::FormatDateAndTime(pRev->GetAuthorDate(), dateFormat, true, bRelativeTimes));
 		}
 		else
@@ -463,17 +464,18 @@ bool CTortoiseGitBlameData::ContainsOnlyFilename(const CString &filename) const
 	return std::all_of(m_Filenames.cbegin(), m_Filenames.cend(), [&filename](auto& name) { return filename == name; });
 }
 
-GitRevLoglist* CTortoiseGitBlameData::GetRevForHash(CGitHashMap& HashToRev, const CGitHash& hash, CString* err)
+GitRevLoglist* CTortoiseGitBlameData::GetRevForHash(CGitHashMap& HashToRev, const CGitHash& hash, const CGitMailmap& mailmap, CString* err)
 {
 	auto it = HashToRev.find(hash);
 	if (it == HashToRev.end())
 	{
 		GitRevLoglist rev;
-		if (rev.GetCommitFromHash(hash))
+		if (rev.GetCommitFromHash(hash))//TODO
 		{
 			*err = rev.GetLastErr();
 			return nullptr;
 		}
+		rev.ApplyMailmap(mailmap);
 		it = HashToRev.emplace(hash, rev).first;
 	}
 	return &(it->second);

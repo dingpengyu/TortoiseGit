@@ -779,13 +779,14 @@ void CRebaseDlg::AddBranchToolTips(CHistoryCombo& pBranch)
 		return;
 
 	GitRev rev;
-	if (rev.GetCommit(text))
+	if (rev.GetCommit(text))//TODO
 	{
 		MessageBox(L"Failed to get commit.\n" + rev.GetLastErr(), L"TortoiseGit", MB_ICONERROR);
 		return;
 	}
+	rev.ApplyMailmap();
 
-	CString tooltip;
+	CString tooltip;//TODO
 	tooltip.Format(L"%s: %s\n%s: %s <%s>\n%s: %s\n%s:\n%s\n%s",
 					static_cast<LPCTSTR>(CString(MAKEINTRESOURCE(IDS_LOG_REVISION))),
 					static_cast<LPCTSTR>(rev.m_CommitHash.ToString()),
@@ -2005,13 +2006,13 @@ int CRebaseDlg::DoRebase()
 	}
 
 	if (nextCommitIsSquash && mode != CGitLogListBase::LOGACTIONS_REBASE_SQUASH)
-		m_SquashFirstMetaData = SquashFirstMetaData(pRev);
+		m_SquashFirstMetaData = SquashFirstMetaData(pRev);// Problem here?!
 
 	if ((nextCommitIsSquash && mode != CGitLogListBase::LOGACTIONS_REBASE_EDIT) || mode == CGitLogListBase::LOGACTIONS_REBASE_SQUASH)
 	{ // next or this commit is squash (don't do this on edit->squash sequence)
 		nocommit = L" --no-commit ";
 		if (m_iSquashdate == 1)
-			m_SquashFirstMetaData.UpdateDate(pRev);
+			m_SquashFirstMetaData.UpdateDate(pRev);// Problem here?!
 	}
 
 	CString log;
@@ -2988,7 +2989,7 @@ void CRebaseDlg::OnBnClickedButtonAdd()
 	for (auto it = selectedHashes.crbegin(); it != selectedHashes.crend(); ++it)
 	{
 		GitRevLoglist* pRev = m_CommitList.m_logEntries.m_pLogCache->GetCacheData(*it);
-		if (pRev->GetCommit(it->ToString()))
+		if (pRev->GetCommit(it->ToString()))//TODO
 			return;
 		if (pRev->GetParentFromHash(pRev->m_CommitHash))
 			return;

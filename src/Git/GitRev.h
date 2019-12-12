@@ -22,6 +22,7 @@
 #include "AtlTime.h"
 #include "GitHash.h"
 #include "GitDll.h"
+#include "GitMailmap.h"
 
 typedef std::vector<CGitHash> GIT_REV_LIST;
 
@@ -55,6 +56,7 @@ protected:
 
 public:
 	GitRev(void);
+
 	CString GetAuthorName() const
 	{
 		return m_AuthorName;
@@ -127,6 +129,8 @@ public:
 	int GetCommit(const CString& rev);
 
 	CString GetLastErr() const { return m_sErr; }
+
+	void ApplyMailmap(const CGitMailmap& mailmap = CGitMailmap());
 
 	void DbgPrint();
 

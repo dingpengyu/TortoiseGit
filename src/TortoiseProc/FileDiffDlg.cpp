@@ -143,10 +143,7 @@ void CFileDiffDlg::SetDiff(const CTGitPath* path, const CString &baseRev1, const
 		m_rev1.GetSubject().LoadString(IDS_WORKING_TREE);
 	}
 	else
-	{
-		if (m_rev1.GetCommit(baseRev1))
-			MessageBox(m_rev1.GetLastErr(), L"TortoiseGit", MB_ICONERROR);
-	}
+		FillRevFromString(&m_rev1, baseRev1);
 
 	logout.clear();
 
@@ -156,10 +153,7 @@ void CFileDiffDlg::SetDiff(const CTGitPath* path, const CString &baseRev1, const
 		m_rev2.GetSubject().LoadString(IDS_WORKING_TREE);
 	}
 	else
-	{
-		if (m_rev2.GetCommit(hash2))
-			MessageBox(m_rev2.GetLastErr(), L"TortoiseGit", MB_ICONERROR);
-	}
+		FillRevFromString(&m_rev2, hash2);
 }
 
 void CFileDiffDlg::SetDiff(const CTGitPath* path, const GitRev &baseRev1)
@@ -262,7 +256,7 @@ BOOL CFileDiffDlg::OnInitDialog()
 		this->m_ctrRev1Edit.SetWindowText(this->m_rev1.m_CommitHash.ToString());
 	else
 	{
-		if (m_rev1.GetCommit(m_strRev1))
+		if (m_rev1.GetCommit(m_strRev1))//TODO
 		{
 			CString msg;
 			msg.Format(IDS_PROC_REFINVALID, static_cast<LPCTSTR>(m_strRev1));
@@ -276,7 +270,7 @@ BOOL CFileDiffDlg::OnInitDialog()
 		this->m_ctrRev2Edit.SetWindowText(this->m_rev2.m_CommitHash.ToString());
 	else
 	{
-		if (m_rev2.GetCommit(m_strRev2))
+		if (m_rev2.GetCommit(m_strRev2))//TODO
 		{
 			CString msg;
 			msg.Format(IDS_PROC_REFINVALID, static_cast<LPCTSTR>(m_strRev2));
@@ -879,7 +873,7 @@ void CFileDiffDlg::SetURLLabels(int mask)
 		SetDlgItemText(IDC_FIRSTURL, m_rev1.m_CommitHash.ToString(g_Git.GetShortHASHLength()) + L": " + m_rev1.GetSubject());
 		if (!m_rev1.m_CommitHash.IsEmpty())
 			m_tooltips.AddTool(IDC_FIRSTURL,
-				CLoglistUtils::FormatDateAndTime(m_rev1.GetAuthorDate(), DATE_SHORTDATE) + L"  " + m_rev1.GetAuthorName());
+				CLoglistUtils::FormatDateAndTime(m_rev1.GetAuthorDate(), DATE_SHORTDATE) + L"  " + m_rev1.GetAuthorName());//DOSO
 	}
 
 	if(mask &0x2)
@@ -887,7 +881,7 @@ void CFileDiffDlg::SetURLLabels(int mask)
 		SetDlgItemText(IDC_SECONDURL, m_rev2.m_CommitHash.ToString(g_Git.GetShortHASHLength()) + L": " + m_rev2.GetSubject());
 		if (!m_rev2.m_CommitHash.IsEmpty())
 			m_tooltips.AddTool(IDC_SECONDURL,
-				CLoglistUtils::FormatDateAndTime(m_rev2.GetAuthorDate(), DATE_SHORTDATE) + L"  " + m_rev2.GetAuthorName());
+				CLoglistUtils::FormatDateAndTime(m_rev2.GetAuthorDate(), DATE_SHORTDATE) + L"  " + m_rev2.GetAuthorName());//TODO
 	}
 
 	this->GetDlgItem(IDC_REV1GROUP)->SetWindowText(CString(MAKEINTRESOURCE(IDS_PROC_FILEDIFF_VERSION1BASE)));
@@ -1194,7 +1188,7 @@ void CFileDiffDlg::OnTimer(UINT_PTR nIDEvent)
 		CString str;
 		int mask = 0;
 		this->m_ctrRev1Edit.GetWindowText(str);
-		if (!gitrev.GetCommit(str))
+		if (!gitrev.GetCommit(str))//TODO
 		{
 			m_rev1 = gitrev;
 			mask |= 0x1;
@@ -1208,7 +1202,7 @@ void CFileDiffDlg::OnTimer(UINT_PTR nIDEvent)
 
 		this->m_ctrRev2Edit.GetWindowText(str);
 
-		if (!gitrev.GetCommit(str))
+		if (!gitrev.GetCommit(str))//TODO
 		{
 			m_rev2 = gitrev;
 			mask |= 0x2;

@@ -848,7 +848,7 @@ void CLogDlg::FillLogMessageCtrl(bool bShow /* = true*/)
 		GitRevLoglist* pLogEntry = m_LogList.m_arShownList.SafeGetAt(selIndex);
 
 		{
-			m_gravatar.LoadGravatar(pLogEntry->GetAuthorEmail());
+			m_gravatar.LoadGravatar(pLogEntry->GetAuthorEmail());//TODO
 
 			CString out_describe;
 			if (m_bShowDescribe)
@@ -2562,7 +2562,7 @@ void CLogDlg::OnBnClickedJumpUp()
 		if (index == 0) return;
 
 		GitRev* data = m_LogList.m_arShownList.SafeGetAt(index);
-		if (jumpType == JumpType_AuthorEmail)
+		if (jumpType == JumpType_AuthorEmail)//TODO
 			strValue = data->GetAuthorEmail();
 		else if (jumpType == JumpType_CommitterEmail)
 			strValue = data->GetCommitterEmail();
@@ -2594,7 +2594,7 @@ void CLogDlg::OnBnClickedJumpUp()
 	{
 		bool found = false;
 		GitRev* data = m_LogList.m_arShownList.SafeGetAt(i);
-		if (jumpType == JumpType_AuthorEmail)
+		if (jumpType == JumpType_AuthorEmail)//TODO
 			found = strValue == data->GetAuthorEmail();
 		else if (jumpType == JumpType_CommitterEmail)
 			found = strValue == data->GetCommitterEmail();
@@ -2662,7 +2662,7 @@ void CLogDlg::OnBnClickedJumpDown()
 		if (index == 0) return;
 
 		GitRev* data = m_LogList.m_arShownList.SafeGetAt(index);
-		if (jumpType == JumpType_AuthorEmail)
+		if (jumpType == JumpType_AuthorEmail)//TODO
 			strValue = data->GetAuthorEmail();
 		else if (jumpType == JumpType_CommitterEmail)
 			strValue = data->GetCommitterEmail();
@@ -2705,7 +2705,7 @@ void CLogDlg::OnBnClickedJumpDown()
 		bool found = false;
 		GitRev* data = m_LogList.m_arShownList.SafeGetAt(i);
 		if (jumpType == JumpType_AuthorEmail)
-			found = strValue == data->GetAuthorEmail();
+			found = strValue == data->GetAuthorEmail();//TODO
 		else if (jumpType == JumpType_CommitterEmail)
 			found = strValue == data->GetCommitterEmail();
 		else if (jumpType == JumpType_MergePoint)
@@ -3473,7 +3473,7 @@ void CLogDlg::OnBnClickedView()
 					{
 						GitRev* pLogEntry = m_LogList.m_arShownList.SafeGetAt(selIndex);
 						if (pLogEntry)
-							email = pLogEntry->GetAuthorEmail();
+							email = pLogEntry->GetAuthorEmail();//TODO
 					}
 				}
 				m_gravatar.LoadGravatar(email);

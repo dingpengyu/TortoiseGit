@@ -299,3 +299,9 @@ int GitRev::GetCommit(const CString& refname)
 	CGitHash hash = CGitHash::FromRaw(sha);
 	return GetCommitFromHash_withoutLock(hash);
 }
+
+void GitRev::ApplyMailmap(const CGitMailmap& mailmap)
+{
+	mailmap.Translate(m_AuthorName, m_AuthorEmail);
+	mailmap.Translate(m_CommitterName, m_CommitterEmail);
+}

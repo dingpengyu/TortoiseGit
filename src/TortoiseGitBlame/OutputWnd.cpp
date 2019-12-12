@@ -149,7 +149,7 @@ void COutputWnd::OnLvnItemchangedLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 			POSITION pos=pMain->GetActiveDocument()->GetFirstViewPosition();
 			CTortoiseGitBlameView *pView=DYNAMIC_DOWNCAST(CTortoiseGitBlameView,pMain->GetActiveDocument()->GetNextView(pos));
 			pView->FocusOn(&this->m_LogList.m_logEntries.GetGitRevAt(pNMLV->iItem));
-			m_Gravatar.LoadGravatar(m_LogList.m_logEntries.GetGitRevAt(pNMLV->iItem).GetAuthorEmail());
+			m_Gravatar.LoadGravatar(m_LogList.m_logEntries.GetGitRevAt(pNMLV->iItem).GetAuthorEmail());//TODO
 		}
 	}
 }

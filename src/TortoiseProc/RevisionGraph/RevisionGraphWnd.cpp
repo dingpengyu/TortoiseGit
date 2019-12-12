@@ -891,7 +891,7 @@ CString CRevisionGraphWnd::TooltipText(ogdf::node index)
 		GitRevLoglist* rev = this->m_LogCache.GetCacheData(hash);
 		str += rev->m_CommitHash.ToString();
 		str += L'\n';
-		str += rev->GetAuthorName() + L' ' + rev->GetAuthorEmail();
+		str += rev->GetAuthorName() + L' ' + rev->GetAuthorEmail();//TODO, ok
 		str += L' ';
 		str += rev->GetAuthorDate().Format(L"%Y-%m-%d %H:%M");
 		str += L"\n\n" + rev->GetSubject();

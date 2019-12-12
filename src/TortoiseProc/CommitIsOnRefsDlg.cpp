@@ -452,6 +452,7 @@ UINT CCommitIsOnRefsDlg::GetRefsThread()
 		InterlockedExchange(&m_bThreadRunning, FALSE);
 		return 0;
 	}
+	m_gitrev.ApplyMailmap();
 
 	if (g_Git.GetRefsCommitIsOn(m_RefList, m_gitrev.m_CommitHash, true, true, CGit::BRANCH_ALL))
 	{
@@ -506,7 +507,7 @@ LRESULT CCommitIsOnRefsDlg::OnGettingRefsFinished(WPARAM, LPARAM)
 	DialogEnableWindow(IDC_FILTER, TRUE);
 	SetDlgItemText(IDC_STATIC_SUBJECT, m_gitrev.m_CommitHash.ToString(g_Git.GetShortHASHLength()) + L": " + m_gitrev.GetSubject());
 	if (!m_gitrev.m_CommitHash.IsEmpty())
-		m_tooltips.AddTool(IDC_STATIC_SUBJECT, CLoglistUtils::FormatDateAndTime(m_gitrev.GetAuthorDate(), DATE_SHORTDATE) + L"  " + m_gitrev.GetAuthorName());
+		m_tooltips.AddTool(IDC_STATIC_SUBJECT, CLoglistUtils::FormatDateAndTime(m_gitrev.GetAuthorDate(), DATE_SHORTDATE) + L"  " + m_gitrev.GetAuthorName());//TODO
 
 	AddToList();
 

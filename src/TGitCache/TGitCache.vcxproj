@@ -47,6 +47,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Git\GitMailmap.cpp" />
     <ClCompile Include="..\Git\MassiveGitTaskBase.cpp" />
     <ClCompile Include="..\TortoiseShell\ShellCache.cpp" />
     <ClCompile Include="..\Utils\DebugOutput.cpp" />
@@ -78,6 +79,7 @@
   <ItemGroup>
     <ClInclude Include="..\Git\Git.h" />
     <ClInclude Include="..\Git\GitForWindows.h" />
+    <ClInclude Include="..\Git\GitMailmap.h" />
     <ClInclude Include="..\Git\MassiveGitTaskBase.h" />
     <ClInclude Include="..\Utils\CreateProcessHelper.h" />
     <ClInclude Include="..\Utils\DebugOutput.h" />

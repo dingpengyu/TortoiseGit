@@ -36,6 +36,7 @@
 #include "FindDlg.h"
 #include <unordered_set>
 #include "LogDlgFilter.h"
+#include "GitMailmap.h"
 
 typedef CComCritSecLock<CComCriticalSection> Locker;
 
@@ -623,6 +624,8 @@ protected:
 	static int DiffAsync(GitRevLoglist* rev, IAsyncDiffCB* pdata)
 	{
 		auto data = static_cast<CGitLogListBase*>(pdata);
+		CGitMailmap mailmap;
+		rev->GetAuthorName() = mailmap.TranslateAuthor(rev->GetAuthorName(), rev->GetAuthorEmail());
 		ULONGLONG offset = data->m_LogCache.GetOffset(rev->m_CommitHash);
 		if (!offset || data->m_LogCache.LoadOneItem(*rev, offset))
 		{
@@ -720,8 +723,6 @@ protected:
 	char                m_szTip[8192];
 	std::map<CString, CRect> m_RefLabelPosMap; // ref name vs. label position
 	int					m_OldTopIndex;
-
-	GIT_MAILMAP			m_pMailmap;
 
 	bool				m_bDragndropEnabled;
 	BOOL				m_bDragging;

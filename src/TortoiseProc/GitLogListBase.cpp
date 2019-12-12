@@ -60,7 +60,6 @@ CGitLogListBase::CGitLogListBase() : CHintCtrl<CResizableColumnsListCtrl<CListCt
 	, m_AsyncThreadExit(FALSE)
 	, m_DiffingThread(nullptr)
 	, m_bIsCherryPick(false)
-	, m_pMailmap(nullptr)
 	, m_bShowBugtraqColumn(false)
 	, m_IsIDReplaceAction(FALSE)
 	, m_ShowMask(0)
@@ -255,8 +254,6 @@ CGitLogListBase::~CGitLogListBase()
 	DestroyIcon(m_hAddedIcon);
 	DestroyIcon(m_hDeletedIcon);
 	m_logEntries.ClearAll();
-
-	git_free_mailmap(m_pMailmap);
 
 	SafeTerminateThread();
 	SafeTerminateAsyncDiffThread();
@@ -1564,37 +1561,6 @@ CString CGitLogListBase::MessageDisplayStr(GitRev* pLogEntry)
 
 // CGitLogListBase message handlers
 
-static const char* GetMailmapMapping(GIT_MAILMAP mailmap, const CString& email, const CString& name, bool returnEmail)
-{
-	struct payload_struct { const CString* name; const char* authorName; };
-	payload_struct payload = { &name, nullptr };//check
-	const char* author1 = nullptr;
-	const char* email1 = nullptr;
-	git_lookup_mailmap(mailmap, &email1, &author1, CUnicodeUtils::GetUTF8(email), &payload,
-		[](void* payload) -> const char* { return reinterpret_cast<payload_struct*>(payload)->authorName = _strdup(CUnicodeUtils::GetUTF8(*reinterpret_cast<payload_struct*>(payload)->name)); });
-	free((void *)payload.authorName);
-	if (returnEmail)
-		return email1;
-	return author1;
-}
-
-static void CopyMailmapProcessedData(GIT_MAILMAP mailmap, LV_ITEM* pItem, const CString& email, const CString& name, bool returnEmail)
-{
-	if (mailmap)
-	{
-		const char* translated = GetMailmapMapping(mailmap, email, name, returnEmail);
-		if (translated)
-		{
-			lstrcpyn(pItem->pszText, CUnicodeUtils::GetUnicode(translated), pItem->cchTextMax - 1);
-			return;
-		}
-	}
-	if (returnEmail)
-		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(email), pItem->cchTextMax - 1);
-	else
-		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(name), pItem->cchTextMax - 1);
-}
-
 void CGitLogListBase::OnLvnGetdispinfoLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	NMLVDISPINFO *pDispInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
@@ -1649,7 +1615,7 @@ void CGitLogListBase::OnLvnGetdispinfoLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(MessageDisplayStr(pLogEntry)), pItem->cchTextMax - 1);
 		break;
 	case LOGLIST_AUTHOR: //Author
-		CopyMailmapProcessedData(m_pMailmap, pItem, pLogEntry->GetAuthorEmail(), pLogEntry->GetAuthorName(), false);
+		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(pLogEntry->GetAuthorName()), pItem->cchTextMax - 1);
 		break;
 	case LOGLIST_DATE: //Date
 		if (!pLogEntry->m_CommitHash.IsEmpty())
@@ -1659,15 +1625,15 @@ void CGitLogListBase::OnLvnGetdispinfoLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 		break;
 
 	case LOGLIST_EMAIL:
-		CopyMailmapProcessedData(m_pMailmap, pItem, pLogEntry->GetAuthorEmail(), pLogEntry->GetAuthorName(), true);
+		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(pLogEntry->GetAuthorEmail()), pItem->cchTextMax - 1);
 		break;
 
 	case LOGLIST_COMMIT_NAME: //Commit
-		CopyMailmapProcessedData(m_pMailmap, pItem, pLogEntry->GetCommitterEmail(), pLogEntry->GetCommitterName(), false);
+		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(pLogEntry->GetCommitterName()), pItem->cchTextMax - 1);
 		break;
 
 	case LOGLIST_COMMIT_EMAIL: //Commit Email
-		CopyMailmapProcessedData(m_pMailmap, pItem, pLogEntry->GetCommitterEmail(), pLogEntry->GetCommitterName(), true);
+		lstrcpyn(pItem->pszText, static_cast<LPCTSTR>(pLogEntry->GetCommitterEmail()), pItem->cchTextMax - 1);
 		break;
 
 	case LOGLIST_COMMIT_DATE: //Commit Date
@@ -2506,6 +2472,7 @@ void CGitLogListBase::CopySelectionToClipBoard(int toCopy)
 					sNotesTags += tagInfo;
 				}
 
+				// TODO
 				sLogCopyText.Format(L"%s: %s\r\n%s: %s <%s>\r\n%s: %s\r\n%s:\r\n%s\r\n%s%s\r\n",
 					static_cast<LPCTSTR>(sRev), static_cast<LPCTSTR>(pLogEntry->m_CommitHash.ToString()),
 					static_cast<LPCTSTR>(sAuthor), static_cast<LPCTSTR>(pLogEntry->GetAuthorName()), static_cast<LPCTSTR>(pLogEntry->GetAuthorEmail()),
@@ -2645,11 +2612,6 @@ int CGitLogListBase::FillGitLog(CTGitPath *path, CString *range, int info)
 {
 	ClearText();
 
-	git_free_mailmap(m_pMailmap);
-	m_pMailmap = nullptr;
-	if (CRegDWORD(L"Software\\TortoiseGit\\LogDialog\\UseMailmap", FALSE) == TRUE)
-		git_read_mailmap(&m_pMailmap);
-
 	this->m_arShownList.SafeRemoveAll();
 
 	this->m_logEntries.ClearAll();
@@ -2682,11 +2644,6 @@ int CGitLogListBase::FillGitLog(CTGitPath *path, CString *range, int info)
 int CGitLogListBase::FillGitLog(std::unordered_set<CGitHash>& hashes)
 {
 	ClearText();
-
-	git_free_mailmap(m_pMailmap);
-	m_pMailmap = nullptr;
-	if (CRegDWORD(L"Software\\TortoiseGit\\LogDialog\\UseMailmap", FALSE) == TRUE)
-		git_read_mailmap(&m_pMailmap);
 
 	m_arShownList.SafeRemoveAll();
 
@@ -2798,11 +2755,6 @@ int CGitLogListBase::BeginFetchLog()
 
 		cmd = g_Git.GetLogCmd(list[0], path, mask, &m_Filter, CRegDWORD(L"Software\\TortoiseGit\\LogOrderBy", CGit::LOG_ORDER_TOPOORDER));
 	}
-
-	git_free_mailmap(m_pMailmap);
-	m_pMailmap = nullptr;
-	if (CRegDWORD(L"Software\\TortoiseGit\\LogDialog\\UseMailmap", FALSE) == TRUE)
-		git_read_mailmap(&m_pMailmap);
 
 	g_Git.m_critGitDllSec.Lock();
 	try {
@@ -3037,6 +2989,8 @@ UINT CGitLogListBase::LogThread()
 
 			GitRevLoglist* pRev = m_LogCache.GetCacheData(hash);
 			pRev->m_GitCommit = commit;
+			CGitMailmap mailmap;
+			pRev->GetAuthorName() = mailmap.TranslateAuthor(pRev->GetAuthorName(), pRev->GetAuthorEmail());
 			InterlockedExchange(&pRev->m_IsCommitParsed, FALSE);
 
 			char* note = nullptr;

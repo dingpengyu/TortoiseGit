@@ -33,6 +33,7 @@
 #include "TGitPath.h"
 #include "GitLogListBase.h"
 #include "UnicodeUtils.h"
+#include "GitMailmap.h"
 
 typedef CComCritSecLock<CComCriticalSection> CAutoLocker;
 
@@ -107,6 +108,8 @@ int CLogDataVector::ParserFromLog(CTGitPath* path, DWORD count, DWORD infomask, 
 		return -1;
 	}
 
+	CGitMailmap mailmap;
+
 	int ret = 0;
 	while (ret == 0)
 	{
@@ -153,6 +156,7 @@ int CLogDataVector::ParserFromLog(CTGitPath* path, DWORD count, DWORD infomask, 
 		}
 
 		pRev->ParserFromCommit(&commit);
+		pRev->ApplyMailmap(mailmap);
 		pRev->ParserParentFromCommit(&commit);
 		git_free_commit(&commit);
 
@@ -197,7 +201,7 @@ int CLogDataVector::Fill(std::unordered_set<CGitHash>& hashes)
 	}
 
 	std::set<GitRevLoglist*, SortByParentDate> revs;
-
+	CGitMailmap mailmap;
 	for (const auto& hash : hashes)
 	{
 		GIT_COMMIT commit;
@@ -219,6 +223,7 @@ int CLogDataVector::Fill(std::unordered_set<CGitHash>& hashes)
 		// as such git notes are not needed to be loaded
 
 		pRev->ParserFromCommit(&commit);
+		pRev->ApplyMailmap(mailmap);
 		pRev->ParserParentFromCommit(&commit);
 		git_free_commit(&commit);
 

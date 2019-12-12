@@ -365,7 +365,7 @@ void CTortoiseGitBlameView::OnRButtonUp(UINT /*nFlags*/, CPoint point)
 			pRev = &GetLogData()->GetGitRevAt(logIndex);
 		else
 		{
-			pRev = m_data.GetRev(line, GetLogData()->m_pLogCache->m_HashMap);
+			pRev = m_data.GetRev(line, GetLogData()->m_pLogCache->m_HashMap, CGitMailmap());
 			if (pRev && pRev->m_ParentHash.empty())
 			{
 				if (pRev->GetParentFromHash(pRev->m_CommitHash))
@@ -1692,7 +1692,7 @@ void CTortoiseGitBlameView::OnLButtonDown(UINT nFlags,CPoint point)
 			}
 			else
 			{
-				GitRevLoglist* pRev = m_data.GetRev(line, GetLogData()->m_pLogCache->m_HashMap);
+				GitRevLoglist* pRev = m_data.GetRev(line, GetLogData()->m_pLogCache->m_HashMap, CGitMailmap());
 				this->GetDocument()->GetMainFrame()->m_wndProperties.UpdateProperties(pRev);
 			}
 		}
@@ -1757,7 +1757,7 @@ void CTortoiseGitBlameView::OnMouseHover(UINT /*nFlags*/, CPoint point)
 			if (logIndex >= 0)
 				pRev = &GetLogData()->GetGitRevAt(logIndex);
 			else
-				pRev = m_data.GetRev(line, GetLogData()->m_pLogCache->m_HashMap);
+				pRev = m_data.GetRev(line, GetLogData()->m_pLogCache->m_HashMap, CGitMailmap());
 
 			if (!pRev)
 				return;
@@ -1780,7 +1780,7 @@ void CTortoiseGitBlameView::OnMouseHover(UINT /*nFlags*/, CPoint point)
 			if ((m_bShowCompleteLog && m_bFollowRenames && !m_bOnlyFirstParent) || !BlameIsLimitedToOneFilename(m_dwDetectMovedOrCopiedLines) || m_bBlameOutputContainsOtherFilenames)
 				filename.Format(L"%s: %s\n", static_cast<LPCTSTR>(m_sFileName), static_cast<LPCTSTR>(m_data.GetFilename(line)));
 
-			CString str;
+			CString str;//TODO
 			str.Format(L"%s: %s\n%s%s: %s <%s>\n%s: %s\n%s:\n%s\n%s",	static_cast<LPCTSTR>(m_sRev), static_cast<LPCTSTR>(pRev->m_CommitHash.ToString()), static_cast<LPCTSTR>(filename),
 																	static_cast<LPCTSTR>(m_sAuthor), static_cast<LPCTSTR>(pRev->GetAuthorName()), static_cast<LPCTSTR>(pRev->GetAuthorEmail()),
 																	static_cast<LPCTSTR>(m_sDate), static_cast<LPCTSTR>(CLoglistUtils::FormatDateAndTime(pRev->GetAuthorDate(), m_DateFormat, true, m_bRelativeTimes)),
@@ -1788,7 +1788,7 @@ void CTortoiseGitBlameView::OnMouseHover(UINT /*nFlags*/, CPoint point)
 																	iline <= maxLine ? static_cast<LPCTSTR>(body) : (body.Left(pos) + L"\n...................."));
 
 			m_ToolTip.Pop();
-			m_ToolTip.AddTool(this, str);
+			m_ToolTip.AddTool(this, str);//max length
 
 			Invalidate();
 		}

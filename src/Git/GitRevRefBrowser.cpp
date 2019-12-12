@@ -23,6 +23,7 @@
 #include "Git.h"
 #include "GitRevRefBrowser.h"
 #include "StringUtils.h"
+#include "GitMailmap.h"
 
 GitRevRefBrowser::GitRevRefBrowser() : GitRev()
 {
@@ -60,6 +61,7 @@ int GitRevRefBrowser::GetGitRevRefMap(MAP_REF_GITREVREFBROWSER& map, int mergefi
 
 	int linePos = 0;
 	CString singleRef;
+	CGitMailmap mailmap;
 	while (!(singleRef = allRefs.Tokenize(L"\03", linePos)).IsEmpty())
 	{
 		singleRef.TrimLeft(L"\r\n");
@@ -73,7 +75,7 @@ int GitRevRefBrowser::GetGitRevRefMap(MAP_REF_GITREVREFBROWSER& map, int mergefi
 		ref.m_CommitHash = CGitHash::FromHexStrTry(singleRef.Tokenize(L"\04", valuePos).Trim()); if (valuePos < 0) continue;
 		ref.m_UpstreamRef = singleRef.Tokenize(L"\04", valuePos).Trim(); if (valuePos < 0) continue;
 		ref.m_Subject = singleRef.Tokenize(L"\04", valuePos).Trim(); if (valuePos < 0) continue;
-		ref.m_AuthorName = singleRef.Tokenize(L"\04", valuePos).Trim(); if (valuePos < 0) continue;
+		ref.m_AuthorName = singleRef.Tokenize(L"\04", valuePos).Trim(); if (valuePos < 0) continue;//TODO, needs full
 		CString date = singleRef.Tokenize(L"\04", valuePos).Trim();
 		ref.m_AuthorDate = StrToInt(date);
 		if (ref.m_AuthorName.IsEmpty())
