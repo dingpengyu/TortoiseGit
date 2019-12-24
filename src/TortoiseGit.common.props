@@ -20,6 +20,9 @@
       <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">_WIN64;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
+      <!--<AdditionalOptions>/w45035 /w44906 /w44464 /w44350 /w44265 /w44255 /w44191 %(AdditionalOptions)</AdditionalOptions>-->
+      <!--<WarningLevel>EnableAllWarnings</WarningLevel>-->
     </ClCompile>
     <Lib>
       <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
