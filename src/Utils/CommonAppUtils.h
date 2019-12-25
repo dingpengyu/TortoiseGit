@@ -29,6 +29,8 @@ public:
 	struct LaunchApplicationFlags
 	{
 		bool bWaitForStartup = false;
+		bool bWaitForExit = false;
+		HANDLE hWaitHandle = nullptr;
 		bool bUAC = false;
 		CString* psCWD = nullptr;
 		UINT uiIDErrMessageFormat = 0;
@@ -42,6 +44,13 @@ public:
 		LaunchApplicationFlags& WaitForStartup(bool b = true)
 		{
 			bWaitForStartup = b;
+			return *this;
+		}
+		LaunchApplicationFlags& WaitForExit(bool b = true, HANDLE h = nullptr)
+		{
+			ASSERT(!h || b);
+			bWaitForExit = b;
+			hWaitHandle = h;
 			return *this;
 		}
 		LaunchApplicationFlags& UAC(bool b = true)
