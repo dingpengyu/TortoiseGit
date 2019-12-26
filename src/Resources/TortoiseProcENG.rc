@@ -646,7 +646,7 @@ BEGIN
     PUSHBUTTON      "...",IDC_DIFFVIEWERBROWSE,274,139,14,14
 END
 
-IDD_SETTINGSPROGSMERGE DIALOGEX 0, 0, 300, 217
+IDD_SETTINGSPROGSMERGE DIALOGEX 0, 0, 375, 271
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Diff Viewer::Merge Tool"
 FONT 9, "MS Shell Dlg 2", 400, 0, 0x1
@@ -656,8 +656,10 @@ BEGIN
     CONTROL         "&External",IDC_EXTMERGE_ON,"Button",BS_AUTORADIOBUTTON,89,23,76,10
     EDITTEXT        IDC_EXTMERGE,7,41,263,14,ES_AUTOHSCROLL | WS_GROUP
     PUSHBUTTON      "...",IDC_EXTMERGEBROWSE,279,41,14,14
-    LTEXT           "Click on ""Advanced"" to specify alternate merge programs based on file extension",IDC_STATIC,7,70,160,33
-    PUSHBUTTON      "&Advanced...",IDC_EXTMERGEADVANCED,206,73,87,14
+    CONTROL         "Trust exitcode of the external mege tool for auto resolving (blocks TortoiseGit)",IDC_TRUSTEXITCODE,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,7,61,286,22
+    LTEXT           "Click on ""Advanced"" to specify alternate merge programs based on file extension",IDC_STATIC,7,86,160,33
+    PUSHBUTTON      "&Advanced...",IDC_EXTMERGEADVANCED,206,89,87,14
 END
 
 IDD_SETTINGSLOOKANDFEEL DIALOGEX 0, 0, 301, 238

@@ -403,6 +403,30 @@ BOOL CAppUtils::StartExtMerge(bool bAlternative,
 	if ((bReadOnly)&&(bInternal))
 		com += L" /readonly";
 
+	if (!bInternal)
+	{
+		DWORD exitCode = DWORD_MAX;
+		if (!LaunchApplication(com, CAppUtils::LaunchApplicationFlags().UseSpecificErrorMessage(IDS_ERR_EXTMERGESTART).WaitForExit(true, nullptr, &exitCode)))
+			return FALSE;
+
+		if (exitCode == 0 && resolveMsgHwnd && CRegDWORD(L"Software\\TortoiseGit\\RefreshFileListAfterResolvingConflict", TRUE) == TRUE)
+		{
+			CString cmd, out;
+			cmd.Format(L"git.exe add -f -- \"%s\"", static_cast<LPCTSTR>(mergedfile.GetGitPathString()));
+			if (g_Git.Run(cmd, &out, CP_UTF8))
+			{
+				MessageBox(GetExplorerHWND(), out, L"TortoiseGit", MB_OK | MB_ICONERROR);
+				return FALSE;
+			}
+
+			RemoveTempMergeFile(mergedfile);
+
+			static UINT WM_REVERTMSG = RegisterWindowMessage(L"GITSLNM_NEEDSREFRESH");
+			::PostMessage(resolveMsgHwnd, WM_REVERTMSG, NULL, NULL);
+		}
+		return TRUE;
+	}
+
 	if (!LaunchApplication(com, CAppUtils::LaunchApplicationFlags().UseSpecificErrorMessage(IDS_ERR_EXTMERGESTART)))
 	{
 		return FALSE;
@@ -1987,6 +2011,7 @@ bool CAppUtils::ConflictEdit(HWND hWnd, CTGitPath& path, bool bAlternativeTool /
 
 	if(b_local && b_remote )
 	{
+		// here
 		merge.SetFromWin(g_Git.CombinePath(merge));
 		if (isRebase)
 			return !!CAppUtils::StartExtMerge(bAlternativeTool, base, mine, theirs, merge, baseTitle, mineTitle, theirsTitle, CString(), false, resolveMsgHwnd, true);

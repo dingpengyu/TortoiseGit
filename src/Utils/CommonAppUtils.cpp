@@ -27,6 +27,7 @@
 #include "SelectFileFilter.h"
 #include "DPIAware.h"
 #include "LoadIconEx.h"
+#include "SmartHandle.h"
 
 extern CString sOrigCWD;
 extern CString g_sGroupingUUID;
@@ -95,6 +96,8 @@ bool CCommonAppUtils::LaunchApplication(const CString& sCommandLine, const Launc
 
 		if (shellinfo.hProcess)
 		{
+			CAutoGeneralHandle piProcess(std::move(shellinfo.hProcess));
+
 			if (flags.bWaitForStartup)
 				WaitForInputIdle(shellinfo.hProcess, 10000);
 
@@ -111,9 +114,13 @@ bool CCommonAppUtils::LaunchApplication(const CString& sCommandLine, const Launc
 				WaitForMultipleObjects(count, handles, FALSE, INFINITE);
 				if (flags.hWaitHandle)
 					CloseHandle(flags.hWaitHandle);
-			}
 
-			CloseHandle(shellinfo.hProcess);
+				if (flags.pdwExitCode)
+				{
+					if (!GetExitCodeProcess(shellinfo.hProcess, flags.pdwExitCode))
+						return false;
+				}
+			}
 		}
 
 		return true;
@@ -135,6 +142,9 @@ bool CCommonAppUtils::LaunchApplication(const CString& sCommandLine, const Launc
 		return false;
 	}
 
+	CAutoGeneralHandle piThread(std::move(process.hThread));
+	CAutoGeneralHandle piProcess(std::move(process.hProcess));
+
 	AllowSetForegroundWindow(process.dwProcessId);
 
 	if (flags.bWaitForStartup)
@@ -153,10 +163,13 @@ bool CCommonAppUtils::LaunchApplication(const CString& sCommandLine, const Launc
 		WaitForMultipleObjects(count, handles, FALSE, INFINITE);
 		if (flags.hWaitHandle)
 			CloseHandle(flags.hWaitHandle);
-	}
 
-	CloseHandle(process.hThread);
-	CloseHandle(process.hProcess);
+		if (flags.pdwExitCode)
+		{
+			if (!GetExitCodeProcess(process.hProcess, flags.pdwExitCode))
+				return false;
+		}
+	}
 
 	return true;
 }
@@ -212,7 +225,7 @@ bool CCommonAppUtils::SetListCtrlBackgroundImage(HWND hListCtrl, UINT nID, int w
 		return false;
 	SCOPE_EXIT { DestroyIcon(hIcon); };
 
-	RECT rect = {0};
+	RECT rect = { 0 };
 	rect.right = width;
 	rect.bottom = height;
 
@@ -310,7 +323,7 @@ bool CCommonAppUtils::FileOpenSave(CString& path, int* filterindex, UINT title, 
 	}
 
 	if (defaultExt && !SUCCEEDED(pfd->SetDefaultExtension(defaultExt)))
-			return false;
+		return false;
 
 	// set the default folder
 	CComPtr<IShellItem> psiFolder;
@@ -356,7 +369,7 @@ HICON CCommonAppUtils::LoadIconEx(UINT resourceId, UINT cx, UINT cy)
 	return ::LoadIconEx(AfxGetResourceHandle(), MAKEINTRESOURCE(resourceId), cx, cy);
 }
 
-void CCommonAppUtils::SetCharFormat(CWnd* window, DWORD mask , DWORD effects, const std::vector<CHARRANGE>& positions)
+void CCommonAppUtils::SetCharFormat(CWnd* window, DWORD mask, DWORD effects, const std::vector<CHARRANGE>& positions)
 {
 	CHARFORMAT2 format = {};
 	format.cbSize = sizeof(CHARFORMAT2);
@@ -371,7 +384,7 @@ void CCommonAppUtils::SetCharFormat(CWnd* window, DWORD mask , DWORD effects, co
 	}
 }
 
-void CCommonAppUtils::SetCharFormat(CWnd* window, DWORD mask, DWORD effects )
+void CCommonAppUtils::SetCharFormat(CWnd* window, DWORD mask, DWORD effects)
 {
 	CHARFORMAT2 format = {};
 	format.cbSize = sizeof(CHARFORMAT2);
