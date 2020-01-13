@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2016-2019 - TortoiseGit
+// Copyright (C) 2016-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -221,19 +221,25 @@ void CCommitIsOnRefsDlg::OnBnClickedSelRevBtn()
 	if (entry == 1) /*Log*/
 	{
 		CLogDlg dlg;
+		if (dlg.IsThreadRunning())
+		{
+			CMessageBox::Show(GetSafeHwnd(), IDS_PROC_LOG_ONLYONCE, IDS_APPNAME, MB_ICONEXCLAMATION);
+			return;
+		}
 		CString revision;
 		m_cRevEdit.GetWindowText(revision);
 		dlg.SetParams(CTGitPath(), CTGitPath(), revision, revision, 0);
 		dlg.SetSelect(true);
-		if (dlg.DoModal() == IDOK)
+		if (dlg.DoModal() == IDOK && !dlg.GetSelectedHash().empty())
 		{
-			if (dlg.GetSelectedHash().empty())
-				return;
-
 			m_cRevEdit.SetWindowText(dlg.GetSelectedHash().at(0).ToString());
+			BringWindowToTop(); /* cf. issue #3493 */
 		}
 		else
+		{
+			BringWindowToTop(); /* cf. issue #3493 */
 			return;
+		}
 	}
 
 	if (entry == 2) /*RefLog*/

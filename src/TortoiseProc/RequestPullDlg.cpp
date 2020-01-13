@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2011-2014, 2016-2019 - TortoiseGit
+// Copyright (C) 2011-2014, 2016-2020 - TortoiseGit
 
 // with code of PullFetchDlg.cpp
 
@@ -141,6 +141,11 @@ void CRequestPullDlg::OnBnClickedButtonLocalBranch()
 {
 	// use the git log to allow selection of a version
 	CLogDlg dlg;
+	if (dlg.IsThreadRunning())
+	{
+		CMessageBox::Show(GetSafeHwnd(), IDS_PROC_LOG_ONLYONCE, IDS_APPNAME, MB_ICONEXCLAMATION);
+		return;
+	}
 	CString revision;
 	m_cStartRevision.GetWindowText(revision);
 	dlg.SetParams(CTGitPath(), CTGitPath(), revision, revision, 0);
@@ -151,4 +156,5 @@ void CRequestPullDlg::OnBnClickedButtonLocalBranch()
 	dlg.SingleSelection(true);
 	if (dlg.DoModal() == IDOK && !dlg.GetSelectedHash().empty())
 		m_cStartRevision.SetWindowText(dlg.GetSelectedHash().at(0).ToString());
+	BringWindowToTop(); /* cf. issue #3493 */
 }

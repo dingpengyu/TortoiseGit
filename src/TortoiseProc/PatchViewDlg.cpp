@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2017, 2019 - TortoiseGit
+// Copyright (C) 2008-2017, 2019-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,12 +24,15 @@
 #include "PatchViewDlg.h"
 #include "CommonAppUtils.h"
 #include "StringUtils.h"
+#include "DPIAware.h"
 
 #pragma comment(lib, "Dwmapi.lib")
 
 // CPatchViewDlg dialog
 
 IMPLEMENT_DYNAMIC(CPatchViewDlg, CDialog)
+
+#define SEARCHBARHEIGHT 30
 
 CPatchViewDlg::CPatchViewDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CPatchViewDlg::IDD, pParent)
@@ -132,8 +135,8 @@ void CPatchViewDlg::OnSize(UINT nType, int cx, int cy)
 
 		if (m_bShowFindBar)
 		{
-			::SetWindowPos(m_ctrlPatchView.GetSafeHwnd(), HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top - 30, SWP_SHOWWINDOW);
-			::SetWindowPos(m_FindBar.GetSafeHwnd(), HWND_TOP, rect.left, rect.bottom - 30, rect.right - rect.left, 30, SWP_SHOWWINDOW);
+			::SetWindowPos(m_ctrlPatchView.GetSafeHwnd(), HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top - CDPIAware::Instance().ScaleX(SEARCHBARHEIGHT), SWP_SHOWWINDOW);
+			::SetWindowPos(m_FindBar.GetSafeHwnd(), HWND_TOP, rect.left, rect.bottom - CDPIAware::Instance().ScaleX(SEARCHBARHEIGHT + 2), rect.right - rect.left, CDPIAware::Instance().ScaleX(SEARCHBARHEIGHT), SWP_SHOWWINDOW);
 		}
 		else
 		{
@@ -178,13 +181,44 @@ void CPatchViewDlg::ParentOnMoving(HWND parentHWND, LPRECT pRect)
 		SetWindowPos(nullptr, patchrect.left - (parentRect.left - pRect->left), patchrect.top - (parentRect.top - pRect->top), 0, 0, SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOSIZE | SWP_NOZORDER);
 }
 
+void CPatchViewDlg::ParentOnSizing(HWND parentHWND, LPRECT pRect)
+{
+	if (!::IsWindow(m_hWnd))
+		return;
+
+	if (!::IsWindow(parentHWND))
+		return;
+
+	RECT patchrect;
+	GetWindowRect(&patchrect);
+
+	RECT parentRect;
+	::GetWindowRect(parentHWND, &parentRect);
+
+	int adjust = GetBorderAjustment(parentHWND, parentRect);
+	if (patchrect.left != parentRect.right - adjust)
+		return;
+
+	if (patchrect.bottom == parentRect.bottom)
+		patchrect.bottom -= (parentRect.bottom - pRect->bottom);
+	if (patchrect.top == parentRect.top)
+		patchrect.top -= parentRect.top - pRect->top;
+
+	SetWindowPos(nullptr, patchrect.left - (parentRect.right - pRect->right), patchrect.top - (parentRect.top - pRect->top), patchrect.right - patchrect.left, patchrect.bottom - patchrect.top, SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+}
+
 void CPatchViewDlg::ShowAndAlignToParent()
 {
 	CRect rect;
 	m_ParentDlg->GetPatchViewParentWnd()->GetWindowRect(&rect);
 	int adjust = GetBorderAjustment(m_ParentDlg->GetPatchViewParentWnd()->GetSafeHwnd(), rect);
 	rect.left = rect.right - adjust;
-	rect.right = rect.left + static_cast<DWORD>(CRegStdDWORD(L"Software\\TortoiseGit\\TortoiseProc\\PatchDlgWidth", rect.Width()));
+	rect.right = rect.left;
+	int xPos = static_cast<DWORD>(CRegDWORD(L"Software\\TortoiseGit\\TortoiseProc\\ResizableState\\PatchDlgWidth"));
+	if (xPos)
+		rect.right += xPos;
+	else
+		rect.right += rect.Width();
 
 	WINDOWPLACEMENT wp;
 	m_ParentDlg->GetPatchViewParentWnd()->GetWindowPlacement(&wp);
@@ -194,7 +228,7 @@ void CPatchViewDlg::ShowAndAlignToParent()
 	{
 		CRect pos;
 		GetWindowRect(&pos);
-		SetWindowPos(nullptr, 0, 0, static_cast<DWORD>(CRegStdDWORD(L"Software\\TortoiseGit\\TortoiseProc\\PatchDlgWidth", pos.Width())), pos.Height(), SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOMOVE);
+		SetWindowPos(nullptr, 0, 0, xPos ? xPos : pos.Width(), pos.Height(), SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOMOVE);
 	}
 	else
 	{
@@ -234,32 +268,63 @@ void CPatchViewDlg::OnEscape()
 void CPatchViewDlg::OnShowFindBar()
 {
 	m_bShowFindBar = true;
-	m_FindBar.ShowWindow(SW_SHOW);
 	RECT rect;
 	GetClientRect(&rect);
-	::SetWindowPos(m_ctrlPatchView.GetSafeHwnd(), HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top - 30, SWP_SHOWWINDOW);
-	::SetWindowPos(m_FindBar, HWND_TOP, rect.left, rect.bottom - 30, rect.right - rect.left, 30, SWP_SHOWWINDOW);
+	::SetWindowPos(m_ctrlPatchView.GetSafeHwnd(), HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top - CDPIAware::Instance().ScaleX(SEARCHBARHEIGHT), SWP_SHOWWINDOW);
+	::SetWindowPos(m_FindBar, HWND_TOP, rect.left, rect.bottom - CDPIAware::Instance().ScaleX(SEARCHBARHEIGHT + 2), rect.right - rect.left, CDPIAware::Instance().ScaleX(SEARCHBARHEIGHT), SWP_SHOWWINDOW);
+	if (auto selstart = m_ctrlPatchView.Call(SCI_GETSELECTIONSTART), selend = m_ctrlPatchView.Call(SCI_GETSELECTIONEND); selstart != selend)
+	{
+		auto linebuf = std::make_unique<char[]>(selend - selstart + 1);
+		Sci_TextRange range = { static_cast<Sci_PositionCR>(selstart), static_cast<Sci_PositionCR>(selend), linebuf.get() };
+		if (m_ctrlPatchView.Call(SCI_GETTEXTRANGE, 0, reinterpret_cast<LPARAM>(&range)) > 0)
+			m_FindBar.SetFindText(m_ctrlPatchView.StringFromControl(linebuf.get()));
+	}
 	m_FindBar.SetFocusTextBox();
-	m_ctrlPatchView.Call(SCI_SETSELECTIONSTART, 0);
-	m_ctrlPatchView.Call(SCI_SETSELECTIONEND, 0);
-	m_ctrlPatchView.Call(SCI_SEARCHANCHOR);
 }
 
 void CPatchViewDlg::OnFindNext()
 {
-	m_ctrlPatchView.Call(SCI_CHARRIGHT);
-	m_ctrlPatchView.Call(SCI_SEARCHANCHOR);
-	if (m_ctrlPatchView.Call(SCI_SEARCHNEXT, m_FindBar.IsMatchCase() ? SCFIND_MATCHCASE : 0, reinterpret_cast<LPARAM>(static_cast<LPCSTR>(CUnicodeUtils::GetUTF8(m_FindBar.GetFindText())))) == -1)
+	if (m_FindBar.GetFindText().IsEmpty())
+	{
+		OnShowFindBar();
+		return;
+	}
+	DoSearch(false);
+}
+
+void CPatchViewDlg::DoSearch(bool reverse)
+{
+	Sci_Position lastcursor = m_ctrlPatchView.Call(SCI_GETSELECTIONEND);
+	if (!reverse)
+		m_ctrlPatchView.Call(SCI_SETTARGETRANGE, lastcursor, m_ctrlPatchView.Call(SCI_GETLENGTH));
+	else
+	{
+		lastcursor = m_ctrlPatchView.Call(SCI_GETSELECTIONSTART);
+		m_ctrlPatchView.Call(SCI_SETTARGETRANGE, lastcursor, 0);
+	}
+
+	auto searchText = CUnicodeUtils::GetUTF8(m_FindBar.GetFindText());
+	m_ctrlPatchView.Call(SCI_SETSEARCHFLAGS, m_FindBar.IsMatchCase() ? SCFIND_MATCHCASE : SCFIND_NONE);
+	if (auto pos = m_ctrlPatchView.Call(SCI_SEARCHINTARGET, searchText.GetLength(), reinterpret_cast<LPARAM>(static_cast<LPCSTR>(searchText))); pos >= 0)
+	{
+		m_ctrlPatchView.Call(SCI_SETSELECTION, pos, pos + searchText.GetLength());
+		m_ctrlPatchView.Call(SCI_SCROLLCARET);
+	}
+	else
+	{
+		m_ctrlPatchView.Call(SCI_SETSELECTION, lastcursor, lastcursor);
 		FlashWindowEx(FLASHW_ALL, 3, 100);
-	m_ctrlPatchView.Call(SCI_SCROLLCARET);
+	}
 }
 
 void CPatchViewDlg::OnFindPrev()
 {
-	m_ctrlPatchView.Call(SCI_SEARCHANCHOR);
-	if (m_ctrlPatchView.Call(SCI_SEARCHPREV, m_FindBar.IsMatchCase() ? SCFIND_MATCHCASE : 0, reinterpret_cast<LPARAM>(static_cast<LPCSTR>(CUnicodeUtils::GetUTF8(m_FindBar.GetFindText())))) == -1)
-		FlashWindowEx(FLASHW_ALL, 3, 100);
-	m_ctrlPatchView.Call(SCI_SCROLLCARET);
+	if (m_FindBar.GetFindText().IsEmpty())
+	{
+		OnShowFindBar();
+		return;
+	}
+	DoSearch(true);
 }
 
 void CPatchViewDlg::OnFindExit()
@@ -279,7 +344,6 @@ void CPatchViewDlg::OnFindReset()
 {
 	m_ctrlPatchView.Call(SCI_SETSELECTIONSTART, 0);
 	m_ctrlPatchView.Call(SCI_SETSELECTIONEND, 0);
-	m_ctrlPatchView.Call(SCI_SEARCHANCHOR);
 }
 
 LRESULT CPatchViewDlg::OnFindNextMessage(WPARAM, LPARAM)
@@ -318,7 +382,7 @@ void CPatchViewDlg::OnDestroy()
 	__super::OnDestroy();
 	CRect rect;
 	GetWindowRect(&rect);
-	CRegStdDWORD(L"Software\\TortoiseGit\\TortoiseProc\\PatchDlgWidth") = rect.Width();
+	CRegStdDWORD(L"Software\\TortoiseGit\\TortoiseProc\\ResizableState\\PatchDlgWidth") = CDPIAware::Instance().UnscaleX(rect.Width());
 	m_ctrlPatchView.ClearContextMenuHandlers();
 }
 

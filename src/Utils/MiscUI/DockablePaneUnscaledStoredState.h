@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2009-2011, 2015-2017, 2020 - TortoiseGit
+// Copyright (C) 2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,32 +17,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
-#include "GitLoglist.h"
 
-class CGitLogListBase;
+#include <afxdockablepane.h>
 
-class CRefLogList : public CGitLogList
+class CDockablePaneUnscaledStoredState : public CDockablePane
 {
-	DECLARE_DYNAMIC(CRefLogList)
 public:
-	CRefLogList();
-	void InsertRefLogColumn();
-	enum
-	{
-		REFLOG_HASH,
-		REFLOG_REF,
-		REFLOG_ACTION,
-		REFLOG_MESSAGE,
-		REFLOG_DATE,
-	};
-
-	std::vector<GitRevLoglist> m_RevCache;
-
-protected:
-	virtual void OnNMDblclkLoglist(NMHDR* /*pNMHDR*/, LRESULT* pResult) override;
-	virtual void OnLvnGetdispinfoLoglist(NMHDR* pNMHDR, LRESULT* pResult) override;
-	virtual void OnNMCustomdrawLoglist(NMHDR* pNMHDR, LRESULT* pResult) override;
-	virtual BOOL OnToolTipText(UINT id, NMHDR* pNMHDR, LRESULT* pResult) override;
-
-	void CopySelectionToClipBoard(int toCopy = ID_COPYCLIPBOARDFULL) override;
+	virtual BOOL LoadState(LPCTSTR lpszProfileName = NULL, int nIndex = -1, UINT uiID = (UINT)-1) override;
+	virtual BOOL SaveState(LPCTSTR lpszProfileName = NULL, int nIndex = -1, UINT uiID = (UINT)-1) override;
 };

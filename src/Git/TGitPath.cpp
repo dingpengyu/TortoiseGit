@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -569,6 +569,9 @@ bool CTGitPath::IsAncestorOf(const CTGitPath& possibleDescendant) const
 {
 	possibleDescendant.EnsureBackslashPathSet();
 	EnsureBackslashPathSet();
+
+	if (m_sBackslashPath.IsEmpty() && PathIsRelative(possibleDescendant.m_sBackslashPath))
+		return true;
 
 	bool bPathStringsEqual = CPathUtils::ArePathStringsEqual(m_sBackslashPath, possibleDescendant.m_sBackslashPath.Left(m_sBackslashPath.GetLength()));
 	if (m_sBackslashPath.GetLength() >= possibleDescendant.GetWinPathString().GetLength())
@@ -1356,6 +1359,17 @@ bool CTGitPathList::AreAllPathsFiles() const
 	return std::none_of(m_paths.cbegin(), m_paths.cend(), std::mem_fn(&CTGitPath::IsDirectory));
 }
 
+bool CTGitPathList::AreAllPathsDirectories() const
+{
+	// Look through the vector for directories - if we find none, return false
+	return std::all_of(m_paths.cbegin(), m_paths.cend(), std::mem_fn(&CTGitPath::IsDirectory));
+}
+
+bool CTGitPathList::IsAnyAncestorOf(const CTGitPath& possibleDescendant) const
+{
+	return std::any_of(m_paths.cbegin(), m_paths.cend(), [&possibleDescendant](auto& path) { return path.IsAncestorOf(possibleDescendant); });
+}
+
 #if defined(_MFC_VER)
 
 bool CTGitPathList::LoadFromFile(const CTGitPath& filename)
@@ -1638,7 +1652,7 @@ bool CTGitPathList::IsEqual(const CTGitPathList& list)
 	return true;
 }
 
-const CTGitPath* CTGitPathList::LookForGitPath(const CString& path)
+const CTGitPath* CTGitPathList::LookForGitPath(const CString& path) const
 {
 	int i=0;
 	for (i = 0; i < this->GetCount(); ++i)

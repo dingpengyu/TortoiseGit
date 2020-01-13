@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2015-2019 - TortoiseGit
+// Copyright (C) 2015-2020 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ TEST(CTGitPath, GetDirectoryTest)
 	// Bit tricky, this test, because we need to know something about the file
 	// layout on the machine which is running the test
 	TCHAR winDir[MAX_PATH + 1] = { 0 };
-	GetWindowsDirectory(winDir, _countof(winDir));
+	ASSERT_NE(0u, GetWindowsDirectory(winDir, _countof(winDir)));
 	CString sWinDir(winDir);
 
 	CTGitPath testPath;
@@ -225,6 +225,10 @@ TEST(CTGitPath, AncestorTest)
 	EXPECT_FALSE(testPath.IsAncestorOf(CTGitPath(L"c:\\windowsdummy")));
 	EXPECT_TRUE(testPath.IsAncestorOf(CTGitPath(L"c:\\windows\\test.txt")));
 	EXPECT_TRUE(testPath.IsAncestorOf(CTGitPath(L"c:\\windows\\system32\\test.txt")));
+
+	testPath.SetFromWin(L"");
+	EXPECT_FALSE(testPath.IsAncestorOf(CTGitPath(L"c:\\windows\\test.txt")));
+	EXPECT_TRUE(testPath.IsAncestorOf(CTGitPath(L"test.txt")));
 }
 
 /*TEST(CTGitPath, SubversionPathTest)
@@ -1115,7 +1119,7 @@ TEST(CTGitPath, ParserFromLog_DiffTree_Submodule)
 
 static void setFlagOnFileInIndex(CAutoIndex& gitindex, const CString& filename, bool assumevalid, bool skipworktree)
 {
-	size_t idx;
+	size_t idx = SIZE_T_MAX;
 	EXPECT_TRUE(git_index_find(&idx, gitindex, CUnicodeUtils::GetUTF8(filename)) == 0);
 	git_index_entry *e = const_cast<git_index_entry *>(git_index_get_byindex(gitindex, idx));
 	ASSERT_TRUE(e);
@@ -1692,7 +1696,7 @@ TEST(CTGitPath, SetDirectory_DiskAccess)
 	EXPECT_FALSE(path.Exists());
 
 	TCHAR winDir[MAX_PATH + 1] = { 0 };
-	GetWindowsDirectory(winDir, _countof(winDir));
+	ASSERT_NE(0u, GetWindowsDirectory(winDir, _countof(winDir)));
 	MockCTGitPath pathWin;
 	pathWin.SetFromGit(winDir);
 	EXPECT_CALL(pathWin, UpdateAttributes()).Times(1);
@@ -1775,4 +1779,50 @@ TEST(CTGitPath, AreAllPathsFiles)
 
 	list.AddPath(CTGitPath(L"file1"));
 	EXPECT_FALSE(list.AreAllPathsFiles());
+}
+
+TEST(CTGitPath, AreAllPathsDirectories)
+{
+	CTGitPathList list;
+	EXPECT_TRUE(list.AreAllPathsDirectories());
+
+	list.AddPath(CTGitPath(L"C:\\Windows"));
+	EXPECT_TRUE(list.AreAllPathsDirectories());
+
+	list.AddPath(CTGitPath(L"C:\\Windows\\explorer.exe"));
+	EXPECT_FALSE(list.AreAllPathsDirectories());
+
+	list.Clear();
+	// now test relative paths
+	PreserveChdir chdir;
+	CAutoTempDir tmp;
+	SetCurrentDirectory(tmp.GetTempDir());
+
+	EXPECT_TRUE(CreateDirectory(tmp.GetTempDir() + L"\\dir", nullptr));
+	list.AddPath(CTGitPath()); // equivalent of "."
+	EXPECT_TRUE(list.AreAllPathsDirectories());
+
+	list.AddPath(CTGitPath(L"dir"));
+	EXPECT_TRUE(list.AreAllPathsDirectories());
+
+	EXPECT_TRUE(CStringUtils::WriteStringToTextFile(tmp.GetTempDir() + L"\\file1", L"something"));
+	list.AddPath(CTGitPath(L"file1"));
+	EXPECT_FALSE(list.AreAllPathsDirectories());
+}
+
+TEST(CTGitPath, IsAnyAncestorOf)
+{
+	CTGitPathList list;
+	CTGitPath file("a/file");
+	EXPECT_FALSE(list.IsAnyAncestorOf(file));
+
+	list.AddPath(CTGitPath(L"something"));
+	EXPECT_FALSE(list.IsAnyAncestorOf(file));
+
+	list.AddPath(CTGitPath(L"a"));
+	EXPECT_TRUE(list.IsAnyAncestorOf(file));
+
+	list.Clear();
+	list.AddPath(CTGitPath());
+	EXPECT_TRUE(list.IsAnyAncestorOf(file));
 }

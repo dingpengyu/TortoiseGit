@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 // Copyright (C) 2003-2008, 2013-2015 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -3890,7 +3890,7 @@ int CGitStatusListCtrl::UpdateWithGitPathList(CTGitPathList &list)
 	return 0;
 }
 
-int CGitStatusListCtrl::UpdateUnRevFileList(CTGitPathList &list)
+int CGitStatusListCtrl::InsertUnRevListFromPreCalculatedList(const CTGitPathList& list)
 {
 	CAutoWriteLock locker(m_guard);
 	m_UnRevFileList = list;
@@ -4713,9 +4713,23 @@ void CGitStatusListCtrl::SaveChangelists()
 	}
 }
 
-void CGitStatusListCtrl::PruneChangelists()
+void CGitStatusListCtrl::PruneChangelists(const CTGitPathList* root)
 {
 	CAutoReadLock locker(m_guard);
+
+	if (m_pathToChangelist.empty())
+		return;
+
+	CTGitPathList prefixList;
+	if (root)
+	{
+		if (!root->AreAllPathsDirectories())
+			return;
+
+		prefixList = *root;
+		prefixList.SortByPathname();
+	}
+
 	std::set<CString> unchecked;
 	int nListboxEntries = GetItemCount();
 	for (int nItem = 0; nItem < nListboxEntries; ++nItem)
@@ -4733,7 +4747,12 @@ void CGitStatusListCtrl::PruneChangelists()
 	while (it1 != unchecked.cend() && it2 != m_pathToChangelist.end())
 	{
 		if (*it1 > it2->first)
-			it2 = m_pathToChangelist.erase(it2);
+		{
+			if (prefixList.IsEmpty() || prefixList.IsAnyAncestorOf(it2->first))
+				it2 = m_pathToChangelist.erase(it2);
+			else
+				++it2;
+		}
 		else if (it2->first > *it1)
 			++it1;
 		else
@@ -4744,6 +4763,9 @@ void CGitStatusListCtrl::PruneChangelists()
 	}
 	while (it2 != m_pathToChangelist.end())
 	{
-		it2 = m_pathToChangelist.erase(it2);
+		if (prefixList.IsEmpty() || prefixList.IsAnyAncestorOf(it2->first))
+			it2 = m_pathToChangelist.erase(it2);
+		else
+			++it2;
 	}
 }

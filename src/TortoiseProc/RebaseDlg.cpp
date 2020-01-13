@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -158,8 +158,8 @@ void CRebaseDlg::AddRebaseAnchor()
 	AddAnchor(IDC_REBASE_STATIC_UPSTREAM, TOP_CENTER);
 	AddAnchor(IDC_REBASE_STATIC_BRANCH,TOP_LEFT);
 	AddAnchor(IDHELP, BOTTOM_RIGHT);
-	AddAnchor(IDC_REBASE_CHECK_FORCE, TOP_CENTER, TOP_RIGHT);
-	AddAnchor(IDC_REBASE_CHECK_PRESERVEMERGES, TOP_LEFT, TOP_CENTER);
+	AddAnchor(IDC_REBASE_CHECK_FORCE, TOP_CENTER);
+	AddAnchor(IDC_REBASE_CHECK_PRESERVEMERGES, TOP_LEFT);
 	AddAnchor(IDC_CHECK_CHERRYPICKED_FROM, TOP_RIGHT);
 	AddAnchor(IDC_REBASE_SPLIT_COMMIT, BOTTOM_RIGHT);
 	AddAnchor(IDC_REBASE_POST_BUTTON,BOTTOM_LEFT);
@@ -269,7 +269,7 @@ BOOL CRebaseDlg::OnInitDialog()
 
 	EnableSaveRestore(L"RebaseDlg");
 
-	DWORD yPos = CRegDWORD(L"Software\\TortoiseGit\\TortoiseProc\\ResizableState\\RebaseDlgSizer");
+	DWORD yPos = CDPIAware::Instance().ScaleY(CRegDWORD(L"Software\\TortoiseGit\\TortoiseProc\\ResizableState\\RebaseDlgSizer"));
 	RECT rcDlg, rcLogMsg, rcFileList;
 	GetClientRect(&rcDlg);
 	m_CommitList.GetWindowRect(&rcLogMsg);
@@ -282,7 +282,7 @@ BOOL CRebaseDlg::OnInitDialog()
 		m_wndSplitter.GetWindowRect(&rectSplitter);
 		ScreenToClient(&rectSplitter);
 		int delta = yPos - rectSplitter.top;
-		if ((rcLogMsg.bottom + delta > rcLogMsg.top)&&(rcLogMsg.bottom + delta < rcFileList.bottom - 30))
+		if ((rcLogMsg.bottom + delta > rcLogMsg.top) && (rcLogMsg.bottom + delta < rcFileList.bottom - CDPIAware::Instance().ScaleY(30)))
 		{
 			m_wndSplitter.SetWindowPos(nullptr, 0, yPos, 0, 0, SWP_NOSIZE);
 			DoSize(delta);
@@ -475,7 +475,7 @@ void CRebaseDlg::SaveSplitterPos()
 		RECT rectSplitter;
 		m_wndSplitter.GetWindowRect(&rectSplitter);
 		ScreenToClient(&rectSplitter);
-		regPos = rectSplitter.top;
+		regPos = CDPIAware::Instance().UnscaleY(rectSplitter.top);
 	}
 }
 
@@ -2983,7 +2983,10 @@ void CRebaseDlg::OnBnClickedButtonAdd()
 	// allow multi-select
 	dlg.SingleSelection(false);
 	if (dlg.DoModal() != IDOK || dlg.GetSelectedHash().empty())
+	{
+		BringWindowToTop(); /* cf. issue #3493 */
 		return;
+	}
 
 	auto selectedHashes = dlg.GetSelectedHash();
 	for (auto it = selectedHashes.crbegin(); it != selectedHashes.crend(); ++it)

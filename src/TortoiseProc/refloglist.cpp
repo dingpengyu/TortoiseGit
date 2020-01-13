@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2009-2011, 2013, 2015-2019 TortoiseGit
+// Copyright (C) 2009-2011, 2013, 2015-2020 TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 #include "refloglist.h"
 #include "LoglistUtils.h"
 #include "AppUtils.h"
+#include "DPIAware.h"
 
 IMPLEMENT_DYNAMIC(CRefLogList, CGitLogList)
 
@@ -47,13 +48,14 @@ void CRefLogList::InsertRefLogColumn()
 		IDS_STATUSLIST_COLDATE,
 	};
 
+	auto columnWidth = CDPIAware::Instance().ScaleX(ICONITEMBORDER + 16 * 4);
 	static int with[] =
 	{
-		ICONITEMBORDER+16*4,
-		ICONITEMBORDER+16*4,
-		ICONITEMBORDER+16*4,
-		LOGLIST_MESSAGE_MIN,
-		ICONITEMBORDER+16*4,
+		columnWidth,
+		columnWidth,
+		columnWidth,
+		CDPIAware::Instance().ScaleX(LOGLIST_MESSAGE_MIN),
+		columnWidth,
 	};
 	m_dwDefaultColumns = 0xFFFF;
 
@@ -149,4 +151,52 @@ void CRefLogList::OnNMCustomdrawLoglist(NMHDR * /*pNMHDR*/, LRESULT *pResult)
 BOOL CRefLogList::OnToolTipText(UINT /*id*/, NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	return FALSE;
+}
+
+void CRefLogList::CopySelectionToClipBoard(int toCopy)
+{
+	CString sClipdata;
+	POSITION pos = GetFirstSelectedItemPosition();
+	if (pos)
+	{
+		CString sRev;
+		sRev.LoadString(IDS_LOG_REVISION);
+		CString sDate;
+		sDate.LoadString(IDS_LOG_DATE);
+		CString sMessage;
+		sMessage.LoadString(IDS_LOG_MESSAGE);
+		bool first = true;
+		while (pos)
+		{
+			auto pLogEntry = m_arShownList.SafeGetAt(GetNextSelectedItem(pos));
+
+			if (toCopy == ID_COPYCLIPBOARDFULL)
+			{
+				sClipdata.AppendFormat(L"%s: %s\r\n%s: %s\r\n%s: %s%s%s\r\n",
+									static_cast<LPCTSTR>(sRev), static_cast<LPCTSTR>(pLogEntry->m_CommitHash.ToString()),
+									static_cast<LPCTSTR>(sDate), static_cast<LPCTSTR>(CLoglistUtils::FormatDateAndTime(pLogEntry->GetCommitterDate(), m_DateFormat, true, m_bRelativeTimes)),
+									static_cast<LPCTSTR>(sMessage), static_cast<LPCTSTR>(pLogEntry->m_RefAction), pLogEntry->m_RefAction.IsEmpty() ? L"" : L": ", static_cast<LPCTSTR>(pLogEntry->GetSubjectBody(true)));
+			}
+			else if (toCopy == ID_COPYCLIPBOARDMESSAGES)
+			{
+				sClipdata += L"* ";
+				if (!pLogEntry->m_RefAction.IsEmpty())
+				{
+					sClipdata += pLogEntry->m_RefAction;
+					sClipdata += L": ";
+				}
+				sClipdata += pLogEntry->GetSubjectBody(true);
+				sClipdata += L"\r\n\r\n";
+			}
+			else
+			{
+				if (!first)
+					sClipdata += L"\r\n";
+				sClipdata += pLogEntry->m_CommitHash.ToString();
+			}
+
+			first = false;
+		}
+		CStringUtils::WriteAsciiStringToClipboard(sClipdata, GetSafeHwnd());
+	}
 }

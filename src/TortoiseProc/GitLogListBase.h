@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -273,7 +273,7 @@ public:
 protected:
 	GitRevLoglist		m_wcRev;
 public:
-	volatile LONG 		m_bThreadRunning;
+	static volatile LONG s_bThreadRunning;
 protected:
 	CLogCache			m_LogCache;
 
@@ -412,7 +412,7 @@ public:
 	static inline unsigned __int64 GetContextMenuBit(int i) { return unsigned __int64(0x1) << i; }
 	static CString GetRebaseActionName(int action);
 	void InsertGitColumn();
-	void CopySelectionToClipBoard(int toCopy = ID_COPYCLIPBOARDFULL);
+	virtual void CopySelectionToClipBoard(int toCopy = ID_COPYCLIPBOARDFULL);
 	void DiffSelectedRevWithPrevious();
 	bool IsSelectionContinuous();
 protected:
@@ -505,9 +505,9 @@ public:
 		if (m_LoadingThread && InterlockedExchange(&m_bExitThread, TRUE) == FALSE)
 		{
 			DWORD ret = WAIT_TIMEOUT;
-			for (int i = 0; i < 200 && m_bThreadRunning; ++i)
+			for (int i = 0; i < 200 && s_bThreadRunning; ++i)
 				ret =::WaitForSingleObject(m_LoadingThread->m_hThread, 100);
-			if (ret == WAIT_TIMEOUT && m_bThreadRunning)
+			if (ret == WAIT_TIMEOUT && s_bThreadRunning)
 				::TerminateThread(m_LoadingThread, 0);
 			delete m_LoadingThread;
 			m_LoadingThread = nullptr;

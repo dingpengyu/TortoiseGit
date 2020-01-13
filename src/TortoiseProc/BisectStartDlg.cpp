@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2014-2019 TortoiseGit
+// Copyright (C) 2014-2020 TortoiseGit
 
 // with code of PullFetchDlg.cpp
 
@@ -26,6 +26,7 @@
 #include "LogDlg.h"
 #include "AppUtils.h"
 #include "StringUtils.h"
+#include "MessageBox.h"
 
 IMPLEMENT_DYNAMIC(CBisectStartDlg, CHorizontalResizableStandAloneDialog)
 
@@ -144,6 +145,11 @@ void CBisectStartDlg::OnBnClickedButtonGood()
 {
 	// use the git log to allow selection of a version
 	CLogDlg dlg;
+	if (dlg.IsThreadRunning())
+	{
+		CMessageBox::Show(GetSafeHwnd(), IDS_PROC_LOG_ONLYONCE, IDS_APPNAME, MB_ICONEXCLAMATION);
+		return;
+	}
 	CString revision;
 	m_cLastGoodRevision.GetWindowText(revision);
 	dlg.SetParams(CTGitPath(), CTGitPath(), revision, revision, 0);
@@ -157,12 +163,18 @@ void CBisectStartDlg::OnBnClickedButtonGood()
 		m_cLastGoodRevision.SetWindowText(dlg.GetSelectedHash().at(0).ToString());
 		OnChangedRevision();
 	}
+	BringWindowToTop(); /* cf. issue #3493 */
 }
 
 void CBisectStartDlg::OnBnClickedButtonBad()
 {
 	// use the git log to allow selection of a version
 	CLogDlg dlg;
+	if (dlg.IsThreadRunning())
+	{
+		CMessageBox::Show(GetSafeHwnd(), IDS_PROC_LOG_ONLYONCE, IDS_APPNAME, MB_ICONEXCLAMATION);
+		return;
+	}
 	CString revision;
 	m_cFirstBadRevision.GetWindowText(revision);
 	dlg.SetParams(CTGitPath(), CTGitPath(), revision, revision, 0);
@@ -176,4 +188,5 @@ void CBisectStartDlg::OnBnClickedButtonBad()
 		m_cFirstBadRevision.SetWindowText(dlg.GetSelectedHash().at(0).ToString());
 		OnChangedRevision();
 	}
+	BringWindowToTop(); /* cf. issue #3493 */
 }

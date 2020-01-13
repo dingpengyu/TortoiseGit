@@ -22,6 +22,7 @@
 #include "TreePropSheet.h"
 #include "PropPageFrameDefault.h"
 #include "HighColorTab.hpp"
+#include "DPIAware.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -440,8 +441,6 @@ HTREEITEM CTreePropSheet::CreatePageTreeItem(LPCTSTR lpszPath, HTREEITEM hParent
 CString CTreePropSheet::SplitPageTreePath(CString &strRest)
 {
 	int	nSeparatorPos = 0;
-#pragma warning(push)
-#pragma warning(disable: 4127)	// conditional expression constant
 	while (TRUE)
 	{
 		nSeparatorPos = strRest.Find(L"::", nSeparatorPos);
@@ -463,7 +462,6 @@ CString CTreePropSheet::SplitPageTreePath(CString &strRest)
 				++nSeparatorPos;
 		}
 	}
-#pragma warning(pop)
 
 	CString	strItem(strRest.Left(nSeparatorPos));
 	strItem.Replace(L"\\::", L"::");
@@ -671,8 +669,6 @@ void CTreePropSheet::ActivatePreviousPage()
 			// no prev item, so cycle to the last item
 			hPrevItem = m_pwndPageTree->GetRootItem();
 
-#pragma warning(push)
-#pragma warning(disable: 4127)	// conditional expression constant
 			while (TRUE)
 			{
 				while (m_pwndPageTree->GetNextSiblingItem(hPrevItem))
@@ -683,7 +679,6 @@ void CTreePropSheet::ActivatePreviousPage()
 				else
 					break;
 			}
-#pragma warning(pop)
 		}
 
 		if (hPrevItem)
@@ -806,11 +801,8 @@ BOOL CTreePropSheet::OnInitDialog()
 	m_pFrame->ShowCaption(m_bPageCaption);
 
 	// Lets make place for the tree ctrl
-	HDC hdc = ::GetDC(nullptr);
-	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
-	::ReleaseDC(nullptr, hdc);
-	const int	nTreeWidth = m_nPageTreeWidth * dpiX / 96;
-	const int	nTreeSpace = 5;
+	const int nTreeWidth = static_cast<int>(m_nPageTreeWidth * CDPIAware::Instance().ScaleFactorX());
+	const int nTreeSpace = CDPIAware::Instance().ScaleX(5);
 
 	CRect	rectSheet;
 	GetWindowRect(rectSheet);

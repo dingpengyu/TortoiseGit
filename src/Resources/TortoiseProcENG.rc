@@ -776,7 +776,7 @@ BEGIN
     LTEXT           "Reminder: Commit your change after resolve",IDC_STATIC_REMINDER,133,119,149,8
 END
 
-IDD_DIFFFILES DIALOGEX 0, 0, 301, 270
+IDD_DIFFFILES DIALOGEX 0, 0, 301, 280
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Changed Files"
 FONT 9, "MS Shell Dlg 2", 400, 0, 0x1
@@ -795,6 +795,7 @@ BEGIN
     EDITTEXT        IDC_SECONDURL,11,94,276,15,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     EDITTEXT        IDC_FILTER,7,115,287,14,ES_MULTILINE | ES_AUTOHSCROLL
     CONTROL         "",IDC_FILELIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,137,287,126
+    RTEXT           "View Patch>>",IDC_VIEW_PATCH,218,265,76,8
 END
 
 IDD_SETTINGSCOLORS_2 DIALOGEX 0, 0, 300, 217
@@ -2144,7 +2145,7 @@ IDD_FINDBAR DIALOGEX 0, 0, 377, 21
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 9, "MS Shell Dlg 2", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "",IDC_FINDEXIT,0,3,15,14,BS_ICON | NOT WS_TABSTOP
+    PUSHBUTTON      "",IDC_FINDEXIT,0,2,15,14,BS_ICON | NOT WS_TABSTOP
     LTEXT           "Find:",IDC_STATIC,19,5,41,8
     EDITTEXT        IDC_FINDTEXT,65,2,55,14,ES_AUTOHSCROLL
     PUSHBUTTON      "< &Previous",IDC_FINDPREV,125,2,80,14
@@ -2541,7 +2542,7 @@ BEGIN
         RIGHTMARGIN, 294
         VERTGUIDE, 193
         TOPMARGIN, 7
-        BOTTOMMARGIN, 263
+        BOTTOMMARGIN, 273
     END
 
     IDD_SETTINGSCOLORS_2, DIALOG
@@ -3817,6 +3818,8 @@ BEGIN
     IDS_CLONE_ORIGIN_NAME_TT 
                             "Instead of using the remote name ""origin"" to keep track of the upstream repository, use the specific name."
     IDS_MERGESUCCESSFUL     "Was the merge of\n%s\nsuccessful?"
+    IDS_PROC_SYNC_SWITCHTO  "Switch to ""%s"""
+    IDS_CONFIGUREDEFAULT    "Configure default"
 END
 
 STRINGTABLE
@@ -4657,7 +4660,7 @@ BEGIN
     IDS_PROC_FASTFORWARD    "Fast Forward"
     IDS_PROC_EVERYTHINGUPDATED "Everything updated."
     IDS_PROC_SYNC_PULLWRONGBRANCH 
-                            "Pull requires the selected local branch to be the current branch."
+                            "Pull requires the selected local branch to be the current branch.\nDo you want to switch to the selected branch?"
     IDS_PROC_SYNC_REFRESHING "Refreshing..."
     IDS_PROC_SYNC_COMMITSAHEAD "%1!d! commits ahead ""%2!s!"""
     IDS_PROC_SYNC_WAINTINPUT "Waiting for input"

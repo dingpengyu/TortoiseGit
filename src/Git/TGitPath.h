@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 // Copyright (C) 2003-2008, 2014 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -355,7 +355,7 @@ public:
 	void AddPath(const CTGitPath& newPath);
 	bool LoadFromFile(const CTGitPath& filename);
 	bool WriteToFile(const CString& sFilename, bool bUTF8 = false) const;
-	const CTGitPath* LookForGitPath(const CString& path);
+	const CTGitPath* LookForGitPath(const CString& path) const;
 	int	ParserFromLog(BYTE_VECTOR &log, bool parseDeletes = false);
 	int ParserFromLsFile(BYTE_VECTOR &out,bool staged=true);
 	int FillUnRev(unsigned int Action, const CTGitPathList* filterlist = nullptr, CString* err = nullptr);
@@ -373,7 +373,10 @@ public:
 	void Clear();
 	const CTGitPath& operator[](INT_PTR index) const;
 	bool AreAllPathsFiles() const;
+	bool AreAllPathsDirectories() const;
 	bool AreAllPathsFilesInOneDirectory() const;
+	bool IsAnyAncestorOf(const CTGitPath& possibleDescendant) const;
+
 	/**
 	 * returns the directory which all items have in common.
 	 * if not all paths are in the same directory, then

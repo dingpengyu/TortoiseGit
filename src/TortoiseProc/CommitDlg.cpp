@@ -1,7 +1,7 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2003-2014 - TortoiseSVN
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -422,7 +422,7 @@ BOOL CCommitDlg::OnInitDialog()
 	if (GetExplorerHWND())
 		CenterWindow(CWnd::FromHandle(GetExplorerHWND()));
 	EnableSaveRestore(L"CommitDlg");
-	DWORD yPos = CRegDWORD(L"Software\\TortoiseGit\\TortoiseProc\\ResizableState\\CommitDlgSizer");
+	DWORD yPos = CDPIAware::Instance().ScaleY(CRegDWORD(L"Software\\TortoiseGit\\TortoiseProc\\ResizableState\\CommitDlgSizer"));
 	RECT rcDlg, rcLogMsg, rcFileList;
 	GetClientRect(&rcDlg);
 	m_cLogMessage.GetWindowRect(&rcLogMsg);
@@ -1171,7 +1171,12 @@ void CCommitDlg::OnOK()
 					bCloseCommitDlg = false;
 				}
 			}
-			m_ListCtrl.PruneChangelists();
+			CTGitPathList* pList;
+			if (m_bWholeProject || m_bWholeProject2)
+				pList = nullptr;
+			else
+				pList = &m_pathList;
+			m_ListCtrl.PruneChangelists(pList);
 			m_ListCtrl.SaveChangelists();
 		}
 
@@ -1265,7 +1270,7 @@ void CCommitDlg::SaveSplitterPos()
 		RECT rectSplitter;
 		m_wndSplitter.GetWindowRect(&rectSplitter);
 		ScreenToClient(&rectSplitter);
-		regPos = rectSplitter.top;
+		regPos = CDPIAware::Instance().UnscaleY(rectSplitter.top);
 	}
 }
 
@@ -1707,16 +1712,7 @@ LRESULT CCommitDlg::OnFileDropped(WPARAM, LPARAM lParam)
 			// our just (maybe) added path is a child of one of those. If it is
 			// a child of a folder already in the list, we must not add it. Otherwise
 			// that path could show up twice in the list.
-			bool bHasParentInList = false;
-			for (int i=0; i<m_pathList.GetCount(); ++i)
-			{
-				if (m_pathList[i].IsAncestorOf(path))
-				{
-					bHasParentInList = true;
-					break;
-				}
-			}
-			if (!bHasParentInList)
+			if (!m_pathList.IsAnyAncestorOf(path))
 			{
 				m_pathList.AddPath(path);
 				m_pathList.RemoveDuplicates();
@@ -2060,6 +2056,11 @@ bool CCommitDlg::HandleMenuItemClick(int cmd, CSciEdit * pSciEdit)
 	{
 		// use the git log to allow selection of a version
 		CLogDlg dlg;
+		if (dlg.IsThreadRunning())
+		{
+			CMessageBox::Show(GetSafeHwnd(), IDS_PROC_LOG_ONLYONCE, IDS_APPNAME, MB_ICONEXCLAMATION);
+			return true;
+		}
 		// tell the dialog to use mode for selecting revisions
 		dlg.SetSelect(true);
 		// only one revision must be selected however
@@ -2067,6 +2068,7 @@ bool CCommitDlg::HandleMenuItemClick(int cmd, CSciEdit * pSciEdit)
 		dlg.ShowWorkingTreeChanges(false);
 		if (dlg.DoModal() == IDOK && !dlg.GetSelectedHash().empty())
 			pSciEdit->InsertText(dlg.GetSelectedHash().at(0).ToString());
+		BringWindowToTop(); /* cf. issue #3493 */
 		return true;
 	}
 
@@ -2074,6 +2076,11 @@ bool CCommitDlg::HandleMenuItemClick(int cmd, CSciEdit * pSciEdit)
 	{
 		// use the git log to allow selection of a version
 		CLogDlg dlg;
+		if (dlg.IsThreadRunning())
+		{
+			CMessageBox::Show(GetSafeHwnd(), IDS_PROC_LOG_ONLYONCE, IDS_APPNAME, MB_ICONEXCLAMATION);
+			return true;
+		}
 		// tell the dialog to use mode for selecting revisions
 		dlg.SetSelect(true);
 		// only one revision must be selected however
@@ -2090,6 +2097,7 @@ bool CCommitDlg::HandleMenuItemClick(int cmd, CSciEdit * pSciEdit)
 			CString message = rev.GetSubject() + L"\r\n" + rev.GetBody();
 			pSciEdit->InsertText(message);
 		}
+		BringWindowToTop(); /* cf. issue #3493 */
 		return true;
 	}
 
@@ -2699,23 +2707,7 @@ void CCommitDlg::OnSizing(UINT fwSide, LPRECT pRect)
 {
 	__super::OnSizing(fwSide, pRect);
 
-	if(::IsWindow(this->m_patchViewdlg.m_hWnd))
-	{
-		CRect thisrect, patchrect;
-		this->GetWindowRect(thisrect);
-		this->m_patchViewdlg.GetWindowRect(patchrect);
-		if(thisrect.right==patchrect.left)
-		{
-			patchrect.left -= (thisrect.right - pRect->right);
-			patchrect.right-= (thisrect.right - pRect->right);
-
-			if(	patchrect.bottom == thisrect.bottom)
-				patchrect.bottom -= (thisrect.bottom - pRect->bottom);
-			if(	patchrect.top == thisrect.top)
-				patchrect.top -=  thisrect.top-pRect->top;
-			m_patchViewdlg.MoveWindow(patchrect);
-		}
-	}
+	m_patchViewdlg.ParentOnSizing(m_hWnd, pRect);
 }
 
 void CCommitDlg::OnHdnItemchangedFilelist(NMHDR * /*pNMHDR*/, LRESULT *pResult)
