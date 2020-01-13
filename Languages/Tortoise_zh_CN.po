@@ -43,7 +43,7 @@ msgstr ""
 "Project-Id-Version: TortoiseGit\n"
 "Report-Msgid-Bugs-To: https://tortoisegit.org/issues\n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2020-01-02 09:26+0800\n"
+"PO-Revision-Date: 2020-01-14 07:34+0800\n"
 "Last-Translator: dingpengyu <dingpengyu06@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/lznuaa/tortoisegit/"
 "language/zh_CN/)\n"
@@ -3131,6 +3131,10 @@ msgid ""
 "Configure alternative editor. Preferably one which can handle *nix line "
 "endings."
 msgstr "配置替代编辑器。建议使用一个能够处理 *nix 行尾符号的编辑器。"
+
+#. Resource IDs: (IDS_CONFIGUREDEFAULT)
+msgid "Configure default"
+msgstr "配置默认"
 
 #. Resource IDs: (IDS_FIRSTSTART_GITTITLE)
 msgid "Configure git.exe"
@@ -8028,8 +8032,12 @@ msgid "Pull (fetch and merge) commits from a remote branch."
 msgstr "拉取（获取并合并）一个远程分支的提交。"
 
 #. Resource IDs: (IDS_PROC_SYNC_PULLWRONGBRANCH)
-msgid "Pull requires the selected local branch to be the current branch."
-msgstr "拉取要求选择一个本地分支作为当前分支。"
+msgid ""
+"Pull requires the selected local branch to be the current branch.\n"
+"Do you want to switch to the selected branch?"
+msgstr ""
+"拉取要求选择一个本地分支作为当前分支。\n"
+"是否要切换到所选分支？"
 
 #. Resource IDs: (Dialog IDD_PULLFETCH: Control id 302)
 msgid "Pull/Fetch"
@@ -10101,6 +10109,11 @@ msgstr ""
 "交换左右内容\n"
 "左右交换"
 
+#. Resource IDs: (IDS_PROC_SYNC_SWITCHTO)
+#, c-format
+msgid "Switch to \"%s\""
+msgstr "切换到 %s"
+
 #. Resource IDs: (AFX_IDS_SCNEXTWINDOW)
 msgid "Switch to the next document window"
 msgstr "切换至下个文件窗口"
@@ -11426,7 +11439,7 @@ msgstr "使用“到来”文本块"
 msgid "Use 'theirs' text block then 'mine'"
 msgstr "先使用“到来”文本块，然后才是“现有”"
 
-#. Resource IDs: (Dialog IDD_SETTINGSDIALOGS: Control id 1911)
+#. Resource IDs: (Dialog IDD_SETTINGSDIALOGS2: Control id 1911)
 msgid "Use .mailmap"
 msgstr "使用 .mailmap"
 
@@ -11799,7 +11812,7 @@ msgstr "视图栏"
 msgid "View Patch"
 msgstr "查看补丁"
 
-#. Resource IDs: (Dialog IDD_COMMITDLG: Control id 1637, IDS_PROC_COMMIT_SHOWPATCH)
+#. Resource IDs: (Dialog IDD_COMMITDLG: Control id 1637, Dialog IDD_DIFFFILES: Control id 1637, IDS_PROC_COMMIT_SHOWPATCH)
 msgid "View Patch>>"
 msgstr "查看补丁>>"
 
