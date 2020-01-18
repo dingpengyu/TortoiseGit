@@ -20,19 +20,21 @@
 #pragma once
 
 #include "HorizontalResizableStandAloneDialog.h"
+#include "HistoryCombo.h"
 
-class CDeleteRemoteTagDlg : public CResizableStandAloneDialog
+class CSelectRemoteRefDlg : public CHorizontalResizableStandAloneDialog
 {
-	DECLARE_DYNAMIC(CDeleteRemoteTagDlg)
+	DECLARE_DYNAMIC(CSelectRemoteRefDlg)
 
 public:
-	CDeleteRemoteTagDlg(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CDeleteRemoteTagDlg();
+	CSelectRemoteRefDlg(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~CSelectRemoteRefDlg();
 
 // Dialog Data
-	enum { IDD = IDD_DELETEREMOTETAG };
+	enum { IDD = IDD_SELECTREMOTEREF };
 
 	CString m_sRemote;
+	CString m_sRemoteBranch;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
@@ -40,14 +42,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-	CListCtrl m_ctrlTags;
-	CButton	m_SelectAll;
+	CHistoryCombo m_ctrlRefs;
 
 	void Refresh();
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 
-	afx_msg void OnBnClickedSelectall();
 	afx_msg void OnBnClickedOk();
-	afx_msg void OnSelchangeTags(NMHDR* pNMHDR, LRESULT* pResult);
 };

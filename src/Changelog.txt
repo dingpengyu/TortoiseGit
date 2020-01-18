@@ -14,6 +14,10 @@ Released: unreleased
  * Fixed issue #3470: Be able to switch branch from the Sync dialog
  * FileDiffDlg: Add patch dialog
  * Improved UDiff search
+ * PullFetchDlg: Allow to select remote references (using ls-remote)
+ * Add optional support for the Windows 8+ spell checker (needs to be enabled in Advanced Settings using the key "Win8SpellChecker" at the moment; if enabled it will be tried first, cf. manual)
+ * Speed up RebaseDlg and SyncDlg by asynchronously calculating the file diff
+ * Update libgit to 2.25.0 based on Git for Windows sources
 
 == Bug Fixes ==
  * Fixed issue #3449: Crash when indenting short lines (pressing tab key)
@@ -32,6 +36,8 @@ Released: unreleased
  * Fixed issue #3493: Closing (cancelling) commit selection window while merging minimizes the Merge dialog
  * Fixed issue #3417: "ignore-on-commit" changelist disappears when committing on different folder
  * High DPI fixes (e.g., searchbar height/position in UDiff; remembering of dialog/slider/divider positions and column widths with changing DPI scalings)
+ * LogDlg: Fix flickering on filtering
+ * Fixed issue #3505: TortoiseGitProc and TGitCache crash on repositories with broken core.worktree path
 
 = Release 2.9.0 =
 Released: 2019-10-31

@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -1598,6 +1598,8 @@ int CGit::GetBranchList(STRING_VECTOR &list, int *current, BRANCH_TYPE type, boo
 					return;
 				}
 			}
+			else if (lineA[0] == '+') // since Git 2.23 branches that are checked out in other worktrees connected to the same repository prefixed with '+'
+				branch = branch.Mid(static_cast<int>(wcslen(L"+ ")));
 			if ((type & BRANCH_REMOTE) != 0 && (type & BRANCH_LOCAL) == 0)
 				branch = L"remotes/" + branch;
 			list.push_back(branch);
@@ -1789,8 +1791,11 @@ int CGit::GetRemoteList(STRING_VECTOR &list)
 	});
 }
 
-int CGit::GetRemoteTags(const CString& remote, REF_VECTOR& list)
+int CGit::GetRemoteRefs(const CString& remote, REF_VECTOR& list, bool includeTags, bool includeBranches)
 {
+	if (!includeTags && !includeBranches)
+		return 0;
+
 	size_t prevCount = list.size();
 	if (UsingLibGit2(GIT_CMD_FETCH))
 	{
@@ -1825,26 +1830,58 @@ int CGit::GetRemoteTags(const CString& remote, REF_VECTOR& list)
 		{
 			CString ref = CUnicodeUtils::GetUnicode(heads[i]->name);
 			CString shortname;
-			if (!GetShortName(ref, shortname, L"refs/tags/"))
-				continue;
-			list.emplace_back(TGitRef{ shortname, &heads[i]->oid });
+			if (GetShortName(ref, shortname, L"refs/tags/"))
+			{
+				if (!includeTags)
+					continue;
+			}
+			else
+			{
+				if (!includeBranches)
+					continue;
+				if (!GetShortName(ref, shortname, L"refs/heads/"))
+					shortname = ref;
+			}
+			if (includeTags && includeBranches)
+				list.emplace_back(TGitRef{ ref, &heads[i]->oid });
+			else
+				list.emplace_back(TGitRef{ shortname, &heads[i]->oid });
 		}
-		std::sort(list.begin() + prevCount, list.end(), g_bSortTagsReversed ? LogicalCompareReversedPredicate : LogicalComparePredicate);
+		std::sort(list.begin() + prevCount, list.end(), g_bSortTagsReversed && includeTags && !includeBranches ? LogicalCompareReversedPredicate : LogicalComparePredicate);
 		return 0;
 	}
 
 	CString cmd;
-	cmd.Format(L"git.exe ls-remote -t \"%s\"", static_cast<LPCTSTR>(remote));
+	cmd.Format(L"git.exe ls-remote%s \"%s\"", (includeTags && !includeBranches) ? L" -t" : L" --refs", static_cast<LPCTSTR>(remote));
 	gitLastErr = cmd + L'\n';
-	if (Run(cmd, [&](CStringA lineA)
-	{
-		CGitHash hash = CGitHash::FromHexStr(lineA.Left(GIT_HASH_SIZE * 2));
-		lineA = lineA.Mid(GIT_HASH_SIZE * 2 + static_cast<int>(wcslen(L"\trefs/tags/"))); // sha1, tab + refs/tags/
-		if (!lineA.IsEmpty())
-			list.emplace_back(TGitRef{ CUnicodeUtils::GetUnicode(lineA), hash });
-	}, &gitLastErr))
+	if (Run(
+		cmd, [&](CStringA lineA) {
+			CGitHash hash = CGitHash::FromHexStr(lineA.Left(GIT_HASH_SIZE * 2));
+			lineA = lineA.Mid(GIT_HASH_SIZE * 2 + static_cast<int>(wcslen(L"\t"))); // sha1, tab
+			if (lineA.IsEmpty())
+				return;
+			CString ref = CUnicodeUtils::GetUnicode(lineA);
+			CString shortname;
+			if (GetShortName(ref, shortname, L"refs/tags/"))
+			{
+				if (!includeTags)
+					return;
+			}
+			else
+			{
+				if (!includeBranches)
+					return;
+				if (!GetShortName(ref, shortname, L"refs/heads/"))
+					shortname = ref;
+			}
+			if (includeTags && includeBranches)
+				list.emplace_back(TGitRef{ ref, hash });
+			else
+				list.emplace_back(TGitRef{ shortname, hash });
+		},
+		&gitLastErr))
 		return -1;
-	std::sort(list.begin() + prevCount, list.end(), g_bSortTagsReversed ? LogicalCompareReversedPredicate : LogicalComparePredicate);
+	std::sort(list.begin() + prevCount, list.end(), g_bSortTagsReversed && includeTags && !includeBranches ? LogicalCompareReversedPredicate : LogicalComparePredicate);
 	return 0;
 }
 
