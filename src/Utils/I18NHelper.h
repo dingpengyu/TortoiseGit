@@ -1,7 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2009, 2016-2018, 2020 - TortoiseGit
-// Copyright (C) 2007-2008 - TortoiseSVN
+// Copyright (C) 2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,21 +16,33 @@
 // along with this program; if not, write to the Free Software Foundation,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-#include "stdafx.h"
-#include "SettingsCommand.h"
-#include "../Settings/Settings.h"
-#include "DPIAware.h"
+#pragma once
 
-bool SettingsCommand::Execute()
+class CI18NHelper
 {
-	CString defaultpage = parser.GetVal(L"page");
+private:
+	CI18NHelper() = delete;
 
-	CSettings dlg(IDS_PROC_SETTINGS_TITLE,&orgCmdLinePath);
-	dlg.SetTreeViewMode(TRUE, TRUE, TRUE);
-	dlg.SetTreeWidth(220);
-	dlg.m_DefaultPage = defaultpage;
+	static std::wstring AdjustVersion(const std::wstring& sVer)
+	{
+		if (std::count(sVer.cbegin(), sVer.cend(), L'.') != 3)
+			return {};
 
-	dlg.DoModal();
-	dlg.HandleRestart();
-	return true;
-}
+		if (auto lastDot = sVer.find_last_of(L'.');  lastDot >= wcslen(L"1.2.3")) // strip last entry; MSI also ignores the build number
+			return sVer.substr(0, lastDot + 1);
+
+		return {};
+	}
+
+public:
+	static bool DoVersionStringsMatch(const std::wstring& sVer1, const std::wstring& sVer2)
+	{
+		auto sAdjustedVer1 = AdjustVersion(sVer1);
+		auto sAdjustedVer2 = AdjustVersion(sVer2);
+
+		if (sAdjustedVer1.empty() || sAdjustedVer2.empty())
+			return false;
+
+		return AdjustVersion(sVer1) == AdjustVersion(sVer2);
+	}
+};

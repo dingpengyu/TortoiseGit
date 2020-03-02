@@ -1,6 +1,11 @@
 # Translation of TortoiseGit
+<<<<<<< HEAD
 # Copyright (C) 2008-2019 the TortoiseGit team
 #
+=======
+# Copyright (C) 2008-2020 the TortoiseGit team
+# 
+>>>>>>> master
 # This file is distributed under the same license as TortoiseGit
 #
 # Translators:
@@ -33,7 +38,7 @@
 # wwj402 <wwj402@gmail.com>, 2013
 # xiaobing chen <olivetchan@qq.com>, 2016
 # Xijian Yan, 2018
-# YFdyh000 <yfdyh000@gmail.com>, 2013,2016,2019
+# YFdyh000 <yfdyh000@gmail.com>, 2013,2016,2019-2020
 # YFdyh000 <yfdyh000@gmail.com>, 2013,2016
 # YFdyh000 <yfdyh000@gmail.com>, 2013-2018
 # zhang chuan <zhangchuan.cn@gmail.com>, 2011
@@ -43,11 +48,17 @@ msgstr ""
 "Project-Id-Version: TortoiseGit\n"
 "Report-Msgid-Bugs-To: https://tortoisegit.org/issues\n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
+<<<<<<< HEAD
 "PO-Revision-Date: 2020-01-18 08:52+0800\n"
 "Last-Translator: dingpengyu <dingpengyu06@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/lznuaa/tortoisegit/"
 "language/zh_CN/)\n"
 "Language: zh_CN\n"
+=======
+"PO-Revision-Date: 2020-02-20 22:03+0000\n"
+"Last-Translator: YFdyh000 <yfdyh000@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/lznuaa/tortoisegit/language/zh_CN/)\n"
+>>>>>>> master
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1351,7 +1362,11 @@ msgstr "查看(&V)"
 
 #. Resource IDs: (Dialog IDD_SETTINGIT_CONFIG: Control id 1851)
 msgid "&View effective config"
+<<<<<<< HEAD
 msgstr "查看有效配置(&C)"
+=======
+msgstr "查看有效配置(&V)"
+>>>>>>> master
 
 #. Resource IDs: (Dialog IDD_SETTINGSDIALOGS3: Control id 65535)
 msgid "&Warn on missing Signed-Off-By on commit"
@@ -2121,7 +2136,11 @@ msgstr "自动CrLf转换:"
 
 #. Resource IDs: (Dialog IDD_SETTINGIT_CONFIG: Control id 65535)
 msgid "Auto&CrLf:"
+<<<<<<< HEAD
 msgstr "自动设置CrLf换行(&A):"
+=======
+msgstr "自动&CrLf:"
+>>>>>>> master
 
 #. Resource IDs: (IDS_PROGRS_CLOSE_NOCONFLICTS)
 msgid "Auto-close if no conflicts"
@@ -2265,7 +2284,11 @@ msgstr "Alpha 混合"
 
 #. Resource IDs: (Dialog IDD_SETTINGSPROGSMERGE: Control id 1852)
 msgid "Block TortoiseGit while executing the external merge tool"
+<<<<<<< HEAD
 msgstr "执行外部合并工具时阻止TortoiseGit"
+=======
+msgstr "执行外部的合并工具时阻塞 TortoiseGit"
+>>>>>>> master
 
 #. Resource IDs: (cmdGroupBlocks_LabelTitle_RESID)
 msgid "Blocks"
@@ -2453,6 +2476,7 @@ msgid ""
 "%1!s!\n"
 "to\n"
 "%2!s!"
+<<<<<<< HEAD
 msgstr ""
 "无法复制 \n"
 "%1!s!\n"
@@ -2460,6 +2484,41 @@ msgstr ""
 "%2!s!"
 
 #. Resource IDs: (Dialog AFX_IDD_NEWTYPEDLG: Control id 2, Dialog AFX_IDD_PRINTDLG: Control id 2, Dialog IDD_ADD: Control id 2, Dialog IDD_ADD_REMOTE: Control id 2, Dialog IDD_BISECTSTART: Control id 2, Dialog IDD_BROWSE_REFS: Control id 2, Dialog IDD_BUGTRAQREGEXTESTER: Control id 2, Dialog IDD_CERTCHECK: Control id 2, Dialog IDD_CLEAN: Control id 2, Dialog IDD_CLONE: Control id 2, Dialog IDD_COMMITDLG: Control id 2, Dialog IDD_CREATECHANGELIST: Control id 2, Dialog IDD_CREATEREPO: Control id 2, Dialog IDD_ENCODING: Control id 2, Dialog IDD_EXPORT: Control id 2, Dialog IDD_FIND: Control id 2, Dialog IDD_FORMAT_PATCH: Control id 2, Dialog IDD_GITSWITCH: Control id 2, Dialog IDD_GOTO: Control id 2, Dialog IDD_GOTODLG: Control id 2, Dialog IDD_HISTORYDLG: Control id 2, Dialog IDD_IGNORE: Control id 2, Dialog IDD_INPUTDLG: Control id 2, Dialog IDD_LOGMESSAGE: Control id 2, Dialog IDD_LOGORDERING: Control id 2, Dialog IDD_MERGE: Control id 2, Dialog IDD_MERGEABORT: Control id 2, Dialog IDD_NEW_BRANCH_TAG: Control id 2, Dialog IDD_OPEN: Control id 2, Dialog IDD_OPENDLG: Control id 2, Dialog IDD_PROMPT: Control id 2, Dialog IDD_PULLFETCH: Control id 2, Dialog IDD_PUSH: Control id 2, Dialog IDD_REFLOG: Control id 2, Dialog IDD_REGEXFILTER: Control id 2, Dialog IDD_REGEXFILTERS: Control id 2, Dialog IDD_RENAME: Control id 2, Dialog IDD_REPOSITORY_BROWSER: Control id 2, Dialog IDD_REQUESTPULL: Control id 2, Dialog IDD_RESET: Control id 2, Dialog IDD_RESOLVE: Control id 2, Dialog IDD_REVERT: Control id 2, Dialog IDD_REVGRAPHFILTER: Control id 2, Dialog IDD_SENDMAIL: Control id 2, Dialog IDD_SETTINGSBUGTRAQADV: Control id 2, Dialog IDD_SETTINGSHOOKCONFIG: Control id 2, Dialog IDD_SETTINGSPROGSADV: Control id 2, Dialog IDD_SIMPLEPROMPT: Control id 2, Dialog IDD_STASH: Control id 2, Dialog IDD_SUBMODULE_ADD: Control id 2, Dialog IDD_SUBMODULE_UPDATE: Control id 2, Dialog IDD_SVNDCOMMITTYPE: Control id 2, Dialog IDD_SVNIGNORE: Control id 2, Dialog IDD_SVNPROGRESS: Control id 2, Dialog IDD_TOOLASSOC: Control id 2, Dialog IDD_URL: Control id 2, Dialog IDD_USER_PASSWD: Control id 2, IDS_MSGBOX_CANCEL, IDS_PROC_OVERWRITEEXPORT_CANCEL)
+=======
+msgstr "无法复制 \n%1!s!\n到\n%2!s!"
+
+#. Resource IDs: (Dialog AFX_IDD_NEWTYPEDLG: Control id 2, Dialog
+#. AFX_IDD_PRINTDLG: Control id 2, Dialog IDD_ADD: Control id 2, Dialog
+#. IDD_ADD_REMOTE: Control id 2, Dialog IDD_BISECTSTART: Control id 2, Dialog
+#. IDD_BROWSE_REFS: Control id 2, Dialog IDD_BUGTRAQREGEXTESTER: Control id 2,
+#. Dialog IDD_CERTCHECK: Control id 2, Dialog IDD_CLEAN: Control id 2, Dialog
+#. IDD_CLONE: Control id 2, Dialog IDD_COMMITDLG: Control id 2, Dialog
+#. IDD_CREATECHANGELIST: Control id 2, Dialog IDD_CREATEREPO: Control id 2,
+#. Dialog IDD_ENCODING: Control id 2, Dialog IDD_EXPORT: Control id 2, Dialog
+#. IDD_FIND: Control id 2, Dialog IDD_FORMAT_PATCH: Control id 2, Dialog
+#. IDD_GITSWITCH: Control id 2, Dialog IDD_GOTO: Control id 2, Dialog
+#. IDD_GOTODLG: Control id 2, Dialog IDD_HISTORYDLG: Control id 2, Dialog
+#. IDD_IGNORE: Control id 2, Dialog IDD_INPUTDLG: Control id 2, Dialog
+#. IDD_LOGMESSAGE: Control id 2, Dialog IDD_LOGORDERING: Control id 2, Dialog
+#. IDD_MERGE: Control id 2, Dialog IDD_MERGEABORT: Control id 2, Dialog
+#. IDD_NEW_BRANCH_TAG: Control id 2, Dialog IDD_OPEN: Control id 2, Dialog
+#. IDD_OPENDLG: Control id 2, Dialog IDD_PROMPT: Control id 2, Dialog
+#. IDD_PULLFETCH: Control id 2, Dialog IDD_PUSH: Control id 2, Dialog
+#. IDD_REFLOG: Control id 2, Dialog IDD_REGEXFILTER: Control id 2, Dialog
+#. IDD_REGEXFILTERS: Control id 2, Dialog IDD_RENAME: Control id 2, Dialog
+#. IDD_REPOSITORY_BROWSER: Control id 2, Dialog IDD_REQUESTPULL: Control id 2,
+#. Dialog IDD_RESET: Control id 2, Dialog IDD_RESOLVE: Control id 2, Dialog
+#. IDD_REVERT: Control id 2, Dialog IDD_REVGRAPHFILTER: Control id 2, Dialog
+#. IDD_SELECTREMOTEREF: Control id 2, Dialog IDD_SENDMAIL: Control id 2,
+#. Dialog IDD_SETTINGSBUGTRAQADV: Control id 2, Dialog IDD_SETTINGSHOOKCONFIG:
+#. Control id 2, Dialog IDD_SETTINGSPROGSADV: Control id 2, Dialog
+#. IDD_SIMPLEPROMPT: Control id 2, Dialog IDD_STASH: Control id 2, Dialog
+#. IDD_SUBMODULE_ADD: Control id 2, Dialog IDD_SUBMODULE_UPDATE: Control id 2,
+#. Dialog IDD_SVNDCOMMITTYPE: Control id 2, Dialog IDD_SVNIGNORE: Control id
+#. 2, Dialog IDD_SVNPROGRESS: Control id 2, Dialog IDD_TOOLASSOC: Control id
+#. 2, Dialog IDD_URL: Control id 2, Dialog IDD_USER_PASSWD: Control id 2,
+#. IDS_MSGBOX_CANCEL, IDS_PROC_OVERWRITEEXPORT_CANCEL)
+>>>>>>> master
 msgid "Cancel"
 msgstr "取消"
 
@@ -2862,7 +2921,11 @@ msgstr "克隆成纯版本库"
 
 #. Resource IDs: (IDS_CLONE_BARE_REPO_TT)
 msgid "Clone into a git repository without the working tree."
+<<<<<<< HEAD
 msgstr "无需工作副本即可克隆到git存储库。"
+=======
+msgstr "克隆到一个 git 仓库 (无工作树)。"
+>>>>>>> master
 
 #. Resource IDs: (IDS_MENUCLONE)
 msgid "Clone..."
@@ -3050,7 +3113,11 @@ msgstr "比较HEAD版本(&H)"
 
 #. Resource IDs: (IDS_LOG_POPUP_COMPARE_PARENT_WC)
 msgid "Compare parent with working tree"
+<<<<<<< HEAD
 msgstr "与工作副本比较"
+=======
+msgstr "比较父级与工作树"
+>>>>>>> master
 
 #. Resource IDs: (IDS_PROC_BROWSEREFS_COMPAREREFS)
 msgid "Compare selected refs"
@@ -3134,7 +3201,11 @@ msgstr "配置替代编辑器。建议使用一个能够处理 *nix 行尾符号
 
 #. Resource IDs: (IDS_CONFIGUREDEFAULT)
 msgid "Configure default"
+<<<<<<< HEAD
 msgstr "配置默认"
+=======
+msgstr "配置默认值"
+>>>>>>> master
 
 #. Resource IDs: (IDS_FIRSTSTART_GITTITLE)
 msgid "Configure git.exe"
@@ -6329,6 +6400,18 @@ msgid ""
 "repository, use the specific name."
 msgstr "不要使用远程名称“ origin”来跟踪上游存储库，而应使用特定名称。"
 
+#. Resource IDs: (IDS_CLONE_BRANCH_TT)
+msgid ""
+"Instead of pointing the newly created HEAD to the branch pointed to by the "
+"cloned repository’s HEAD, point to specific branch instead."
+msgstr "不将新创建的 HEAD 指向所克隆仓库的 HEAD 指向的分支，改为指向特定分支。"
+
+#. Resource IDs: (IDS_CLONE_ORIGIN_NAME_TT)
+msgid ""
+"Instead of using the remote name \"origin\" to keep track of the upstream "
+"repository, use the specific name."
+msgstr "不使用 \"origin\" 远端名称来保持与上游仓库的跟踪，使用自定义名称。"
+
 #. Resource IDs: (AFX_IDP_FAILED_MEMORY_ALLOC)
 msgid "Insufficient memory to perform operation."
 msgstr "内存不足，无法完成操作。"
@@ -7076,9 +7159,13 @@ msgstr "没有 a/ 和 b/ 前缀"
 msgid ""
 "No checkout of HEAD is performed after the clone is complete.\n"
 "This makes the working tree empty."
+<<<<<<< HEAD
 msgstr ""
 "克隆完成后，不执行HEAD检出操作。\n"
 "这使工作树为空。"
+=======
+msgstr "克隆后不检出 HEAD。\n这使工作树呈现为空。"
+>>>>>>> master
 
 #. Resource IDs: (IDS_ERR_NOCOMMAND)
 msgid ""
@@ -7394,7 +7481,40 @@ msgstr "OEM 869"
 msgid "OEM-US"
 msgstr "OEM-US"
 
+<<<<<<< HEAD
 #. Resource IDs: (Dialog AFX_IDD_NEWTYPEDLG: Control id 1, Dialog IDD_ABOUT: Control id 1, Dialog IDD_ABOUTBOX: Control id 1, Dialog IDD_ADD: Control id 1, Dialog IDD_ADD_REMOTE: Control id 1, Dialog IDD_BISECTSTART: Control id 1, Dialog IDD_BROWSE_REFS: Control id 1, Dialog IDD_BUGTRAQREGEXTESTER: Control id 1, Dialog IDD_CHANGEDFILES: Control id 1, Dialog IDD_CLEAN: Control id 1, Dialog IDD_CLONE: Control id 1, Dialog IDD_CREATECHANGELIST: Control id 1, Dialog IDD_CREATEREPO: Control id 1, Dialog IDD_ENCODING: Control id 1, Dialog IDD_EXPORT: Control id 1, Dialog IDD_FORMAT_PATCH: Control id 1, Dialog IDD_GITSWITCH: Control id 1, Dialog IDD_GOTO: Control id 1, Dialog IDD_GOTODLG: Control id 1, Dialog IDD_HISTORYDLG: Control id 1, Dialog IDD_IGNORE: Control id 1, Dialog IDD_INPUTDLG: Control id 1, Dialog IDD_LOGMESSAGE: Control id 1, Dialog IDD_LOGORDERING: Control id 1, Dialog IDD_MERGE: Control id 1, Dialog IDD_MERGEABORT: Control id 1, Dialog IDD_NEW_BRANCH_TAG: Control id 1, Dialog IDD_OPEN: Control id 1, Dialog IDD_OPENDLG: Control id 1, Dialog IDD_PROMPT: Control id 1, Dialog IDD_PULLFETCH: Control id 1, Dialog IDD_PUSH: Control id 1, Dialog IDD_REFLOG: Control id 1, Dialog IDD_REGEXFILTER: Control id 1, Dialog IDD_REGEXFILTERS: Control id 1, Dialog IDD_RENAME: Control id 1, Dialog IDD_REPOSITORY_BROWSER: Control id 1, Dialog IDD_REQUESTPULL: Control id 1, Dialog IDD_RESET: Control id 1, Dialog IDD_RESOLVE: Control id 1, Dialog IDD_RESOLVE_CONFLICT: Control id 4569, Dialog IDD_REVERT: Control id 1, Dialog IDD_SETTINGSBUGTRAQADV: Control id 1, Dialog IDD_SETTINGSHOOKCONFIG: Control id 1, Dialog IDD_SETTINGSPROGSADV: Control id 1, Dialog IDD_SIMPLEPROMPT: Control id 1, Dialog IDD_STASH: Control id 1, Dialog IDD_STATGRAPH: Control id 1, Dialog IDD_SUBMODULE_ADD: Control id 1, Dialog IDD_SUBMODULE_UPDATE: Control id 1, Dialog IDD_SVNDCOMMITTYPE: Control id 1, Dialog IDD_SVNIGNORE: Control id 1, Dialog IDD_SVNPROGRESS: Control id 1, Dialog IDD_TOOLASSOC: Control id 1, Dialog IDD_URL: Control id 1, Dialog IDD_USER_PASSWD: Control id 1, IDS_MSGBOX_OK)
+=======
+#. Resource IDs: (Dialog AFX_IDD_NEWTYPEDLG: Control id 1, Dialog IDD_ABOUT:
+#. Control id 1, Dialog IDD_ABOUTBOX: Control id 1, Dialog IDD_ADD: Control id
+#. 1, Dialog IDD_ADD_REMOTE: Control id 1, Dialog IDD_BISECTSTART: Control id
+#. 1, Dialog IDD_BROWSE_REFS: Control id 1, Dialog IDD_BUGTRAQREGEXTESTER:
+#. Control id 1, Dialog IDD_CHANGEDFILES: Control id 1, Dialog IDD_CLEAN:
+#. Control id 1, Dialog IDD_CLONE: Control id 1, Dialog IDD_CREATECHANGELIST:
+#. Control id 1, Dialog IDD_CREATEREPO: Control id 1, Dialog IDD_ENCODING:
+#. Control id 1, Dialog IDD_EXPORT: Control id 1, Dialog IDD_FORMAT_PATCH:
+#. Control id 1, Dialog IDD_GITSWITCH: Control id 1, Dialog IDD_GOTO: Control
+#. id 1, Dialog IDD_GOTODLG: Control id 1, Dialog IDD_HISTORYDLG: Control id
+#. 1, Dialog IDD_IGNORE: Control id 1, Dialog IDD_INPUTDLG: Control id 1,
+#. Dialog IDD_LOGMESSAGE: Control id 1, Dialog IDD_LOGORDERING: Control id 1,
+#. Dialog IDD_MERGE: Control id 1, Dialog IDD_MERGEABORT: Control id 1, Dialog
+#. IDD_NEW_BRANCH_TAG: Control id 1, Dialog IDD_OPEN: Control id 1, Dialog
+#. IDD_OPENDLG: Control id 1, Dialog IDD_PROMPT: Control id 1, Dialog
+#. IDD_PULLFETCH: Control id 1, Dialog IDD_PUSH: Control id 1, Dialog
+#. IDD_REFLOG: Control id 1, Dialog IDD_REGEXFILTER: Control id 1, Dialog
+#. IDD_REGEXFILTERS: Control id 1, Dialog IDD_RENAME: Control id 1, Dialog
+#. IDD_REPOSITORY_BROWSER: Control id 1, Dialog IDD_REQUESTPULL: Control id 1,
+#. Dialog IDD_RESET: Control id 1, Dialog IDD_RESOLVE: Control id 1, Dialog
+#. IDD_RESOLVE_CONFLICT: Control id 4569, Dialog IDD_REVERT: Control id 1,
+#. Dialog IDD_SELECTREMOTEREF: Control id 1, Dialog IDD_SETTINGSBUGTRAQADV:
+#. Control id 1, Dialog IDD_SETTINGSHOOKCONFIG: Control id 1, Dialog
+#. IDD_SETTINGSPROGSADV: Control id 1, Dialog IDD_SIMPLEPROMPT: Control id 1,
+#. Dialog IDD_STASH: Control id 1, Dialog IDD_STATGRAPH: Control id 1, Dialog
+#. IDD_SUBMODULE_ADD: Control id 1, Dialog IDD_SUBMODULE_UPDATE: Control id 1,
+#. Dialog IDD_SVNDCOMMITTYPE: Control id 1, Dialog IDD_SVNIGNORE: Control id
+#. 1, Dialog IDD_SVNPROGRESS: Control id 1, Dialog IDD_TOOLASSOC: Control id
+#. 1, Dialog IDD_URL: Control id 1, Dialog IDD_USER_PASSWD: Control id 1,
+#. IDS_MSGBOX_OK)
+>>>>>>> master
 msgid "OK"
 msgstr "确定"
 
@@ -7819,7 +7939,11 @@ msgstr "请输入 Hook 脚本要应用的路径。使用 \"*\" 表示所有路�
 
 #. Resource IDs: (IDS_GITCHANGED_NEEDRESTART)
 msgid "Please restart TortoiseGit for the changes of git.exe to take effect."
+<<<<<<< HEAD
 msgstr "请重新启动TortoiseGit，以使git.exe的更改生效。"
+=======
+msgstr "请重启 TortoiseGit 以使 git.exe 的更改生效。"
+>>>>>>> master
 
 #. Resource IDs: (IDS_FIRSTSTART_HINT3)
 msgid ""
@@ -8035,9 +8159,13 @@ msgstr "拉取（获取并合并）一个远程分支的提交。"
 msgid ""
 "Pull requires the selected local branch to be the current branch.\n"
 "Do you want to switch to the selected branch?"
+<<<<<<< HEAD
 msgstr ""
 "拉取要求选择一个本地分支作为当前分支。\n"
 "是否要切换到所选分支？"
+=======
+msgstr "拉取（Pull）需要选定的本地分支变为当前分支。\n是否切换当前分支？"
+>>>>>>> master
 
 #. Resource IDs: (Dialog IDD_PULLFETCH: Control id 302)
 msgid "Pull/Fetch"
@@ -8371,7 +8499,8 @@ msgstr "提醒：请在冲突解决后提交您的变更"
 msgid "Remote"
 msgstr "远端"
 
-#. Resource IDs: (Dialog IDD_PULLFETCH: Control id 65535)
+#. Resource IDs: (Dialog IDD_PULLFETCH: Control id 65535, Dialog
+#. IDD_SELECTREMOTEREF: Control id 65535)
 msgid "Remote &Branch:"
 msgstr "远端分支(&B):"
 
@@ -8411,7 +8540,13 @@ msgstr "远端名称不能为空。"
 msgid "Remote status"
 msgstr "远端状态"
 
+<<<<<<< HEAD
 #. Resource IDs: (Dialog IDD_DELETEREMOTETAG: Control id 65535, Dialog IDD_SETTINREMOTE: Control id 65535)
+=======
+#. Resource IDs: (Dialog IDD_DELETEREMOTETAG: Control id 65535, Dialog
+#. IDD_SELECTREMOTEREF: Control id 65535, Dialog IDD_SETTINREMOTE: Control id
+#. 65535)
+>>>>>>> master
 msgid "Remote:"
 msgstr "远端:"
 
@@ -9227,6 +9362,10 @@ msgstr "选择合并工具"
 msgid "Select merge target"
 msgstr "选择合并目标"
 
+#. Resource IDs: (Dialog IDD_SELECTREMOTEREF: Control id 4601)
+msgid "Select remote ref - TortoiseGit"
+msgstr "选择远端 ref - TortoiseGit"
+
 #. Resource IDs: (IDS_SETTINGS_AUTOCLOSE_TT)
 msgid ""
 "Select the behaviour of the progress dialog at the end of the operation."
@@ -9445,7 +9584,11 @@ msgstr "显示所有暂存的文件(&S)"
 
 #. Resource IDs: (ID_VIEW_SHOWALLTAGS - Menu)
 msgid "Show all tags"
+<<<<<<< HEAD
 msgstr "显示所有标签"
+=======
+msgstr "显示所有标签（tag）"
+>>>>>>> master
 
 #. Resource IDs: (32813)
 msgid "Show an overview of the whole graph"
@@ -10059,7 +10202,11 @@ msgstr "子模块"
 
 #. Resource IDs: (IDS_CLONE_RECURSIVE_TT)
 msgid "Submodules are initialized and cloned using their default settings."
+<<<<<<< HEAD
 msgstr "子模块使用其默认设置进行初始化和克隆。"
+=======
+msgstr "子模块将使用其默认设置进行初始化和克隆。"
+>>>>>>> master
 
 #. Resource IDs: (IDS_SUCCESS)
 msgid "Success"
@@ -10113,6 +10260,11 @@ msgstr ""
 #, c-format
 msgid "Switch to \"%s\""
 msgstr "切换到 %s"
+
+#. Resource IDs: (IDS_PROC_SYNC_SWITCHTO)
+#, c-format
+msgid "Switch to \"%s\""
+msgstr "切换到 \"%s\""
 
 #. Resource IDs: (AFX_IDS_SCNEXTWINDOW)
 msgid "Switch to the next document window"
@@ -11199,7 +11351,11 @@ msgstr "去掉行尾空格"
 
 #. Resource IDs: (Dialog IDD_SETTINGSPROGSMERGE: Control id 1853)
 msgid "Trust the exitcode of the external mege tool for auto resolving"
+<<<<<<< HEAD
 msgstr "信任外部mege工具的退出代码以进行自动解析"
+=======
+msgstr "信任并解析外部合并工具的退出码（exitcode）"
+>>>>>>> master
 
 #. Resource IDs: (IDS_SVNERR_CLEANUPORFRESHCHECKOUT)
 msgid "Try a 'Cleanup'. If that doesn't work you need to do a fresh checkout."
@@ -11517,7 +11673,11 @@ msgstr "使用提交者名称"
 
 #. Resource IDs: (IDS_COMMON_ANCESTOR)
 msgid "Use common ancestor (A...B diff)"
+<<<<<<< HEAD
 msgstr "使用 common ancestor (A...B diff)"
+=======
+msgstr "使用共同祖先（A...B diff）"
+>>>>>>> master
 
 #. Resource IDs: (IDS_SMTP_CONFIGURED)
 msgid "Use configured server"
@@ -11812,7 +11972,12 @@ msgstr "视图栏"
 msgid "View Patch"
 msgstr "查看补丁"
 
+<<<<<<< HEAD
 #. Resource IDs: (Dialog IDD_COMMITDLG: Control id 1637, Dialog IDD_DIFFFILES: Control id 1637, IDS_PROC_COMMIT_SHOWPATCH)
+=======
+#. Resource IDs: (Dialog IDD_COMMITDLG: Control id 1637, Dialog IDD_DIFFFILES:
+#. Control id 1637, IDS_PROC_COMMIT_SHOWPATCH)
+>>>>>>> master
 msgid "View Patch>>"
 msgstr "查看补丁>>"
 
@@ -11876,10 +12041,14 @@ msgid ""
 "Was the merge of\n"
 "%s\n"
 "successful?"
+<<<<<<< HEAD
 msgstr ""
 "是合并\n"
 "%s\n"
 "成功了吗？"
+=======
+msgstr "%s\n的合并成功了吗？"
+>>>>>>> master
 
 #. Resource IDs: (IDS_FIRSTSTART_HINT4)
 msgid ""

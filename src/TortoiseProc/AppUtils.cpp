@@ -791,7 +791,7 @@ bool CAppUtils::LaunchRemoteSetting()
 	CTGitPath path(g_Git.m_CurrentDir);
 	CSettings dlg(IDS_PROC_SETTINGS_TITLE, &path);
 	dlg.SetTreeViewMode(TRUE, TRUE, TRUE);
-	dlg.SetTreeWidth(CDPIAware::Instance().ScaleX(220));
+	dlg.SetTreeWidth(220);
 	dlg.m_DefaultPage = L"gitremote";
 
 	dlg.DoModal();
@@ -3579,15 +3579,15 @@ bool CAppUtils::BisectOperation(HWND hWnd, const CString& op, const CString& ref
 	return ret == IDOK;
 }
 
-int CAppUtils::Git2GetUserPassword(git_cred **out, const char *url, const char *username_from_url, unsigned int /*allowed_types*/, void * /*payload*/)
+int CAppUtils::Git2GetUserPassword(git_credential **out, const char *url, const char *username_from_url, unsigned int /*allowed_types*/, void * /*payload*/)
 {
 	CUserPassword dlg;
-	dlg.m_URL = CUnicodeUtils::GetUnicode(url, CP_UTF8);
+	dlg.m_URL = CUnicodeUtils::GetUnicode(url);
 	if (username_from_url)
-		dlg.m_UserName = CUnicodeUtils::GetUnicode(username_from_url, CP_UTF8);
+		dlg.m_UserName = CUnicodeUtils::GetUnicode(username_from_url);
 
 	if (dlg.DoModal() == IDOK)
-		return git_cred_userpass_plaintext_new(out, CUnicodeUtils::GetMulti(dlg.m_UserName, CP_UTF8), dlg.m_passwordA);
+		return git_credential_userpass_plaintext_new(out, CUnicodeUtils::GetUTF8(dlg.m_UserName), dlg.m_passwordA);
 
 	git_error_set_str(GIT_ERROR_NONE, "User cancelled.");
 	return GIT_EUSER;

@@ -1,7 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2020 - TortoiseGit
-// Copyright (C) 2007 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,32 +16,22 @@
 // along with this program; if not, write to the Free Software Foundation,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-#pragma once
-#include "basedialog.h"
 
+#include "stdafx.h"
+#include "I18NHelper.h"
 
-/**
- * \ingroup TortoiseUDiff
- * FindBar.
- * A search bar similar to the one found in FireFox
- */
-class CFindBar : public CDialog
+TEST(I18NHelper, DoVersionStringsMatch)
 {
-public:
-	CFindBar();
-	~CFindBar(void);
+	EXPECT_TRUE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"2.9.0.0"));
+	EXPECT_TRUE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.1", L"2.9.0.0"));
+	EXPECT_TRUE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"2.9.0.1"));
 
-	void					SetParent(HWND hParent) {m_hParent = hParent;}
-	void					SetSearchString(LPCTSTR findStr);
-	void					SelectSearchString();
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L""));
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"\r\n"));
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"..."));
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"2.8.0.0"));
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"2.9.1.0"));
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.9.0.0", L"2.9.0.0.1"));
 
-protected:
-	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
-	LRESULT					DoCommand(int id, int msg);
-
-	void					DoFind(bool bFindPrev);
-
-private:
-	HWND					m_hParent;
-	CAutoIcon m_hIcon;
-};
+	EXPECT_FALSE(CI18NHelper::DoVersionStringsMatch(L"2.11.0", L"2.11.0"));
+}

@@ -92,6 +92,7 @@
     <ClInclude Include="..\..\src\Utils\DebugHelpers.h" />
     <ClInclude Include="..\..\src\Utils\DebugOutput.h" />
     <ClInclude Include="..\..\src\Utils\DirFileEnum.h" />
+    <ClInclude Include="..\..\src\Utils\I18NHelper.h" />
     <ClInclude Include="..\..\src\Utils\LoadIconEx.h" />
     <ClInclude Include="..\..\src\Utils\LruCache.h" />
     <ClInclude Include="..\..\src\Utils\PathUtils.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="GitRevTest.cpp" />
     <ClCompile Include="GitTest.cpp" />
     <ClCompile Include="GitWCRevStatusTest.cpp" />
+    <ClCompile Include="I18NHelperTest.cpp" />
     <ClCompile Include="libgit2Test.cpp" />
     <ClCompile Include="libgitTest.cpp" />
     <ClCompile Include="LogDataVectorTest.cpp" />
@@ -178,11 +180,15 @@
     <ClCompile Include="StringUtilsTest.cpp" />
     <ClCompile Include="TempFileTest.cpp" />
     <ClCompile Include="TGitPathTest.cpp" />
+    <ClCompile Include="UnicodeUtilsTest.cpp" />
     <ClCompile Include="UniqueQueueTests.cpp" />
     <ClCompile Include="UnitTests.cpp" />
     <ClCompile Include="UpdateCryptoTest.cpp" />
     <ClCompile Include="VersioncheckParserTest.cpp" />
     <ClCompile Include="WindowsCredentialsStoreTests.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UnitTests.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ext\build\googletest.vcxproj">

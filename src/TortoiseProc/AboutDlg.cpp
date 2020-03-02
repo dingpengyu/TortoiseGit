@@ -1,7 +1,7 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2003-2008 - TortoiseSVN
-// Copyright (C) 2009-2019 - TortoiseGit
+// Copyright (C) 2009-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 #include "PathUtils.h"
 #define NEED_SIGNING_KEY
 #include "../version.h"
+#include "VersioncheckParser.h"
 #include "AppUtils.h"
 #include "Git.h"
 #include "DPIAware.h"
@@ -98,7 +99,25 @@ BOOL CAboutDlg::OnInitDialog()
 	}
 
 	CString tortoisegitprocpath;
-	tortoisegitprocpath.Format(L"(%s)", static_cast<LPCTSTR>(CPathUtils::GetAppDirectory().TrimRight(L'\\')));
+	CString additionalVersionInformation;
+#if PREVIEW
+	additionalVersionInformation = _T(PREVIEW_INFO);
+#else
+	if (CString hotfix = CPathUtils::GetAppDirectory() + L"hotfix.ini"; PathFileExists(hotfix))
+	{
+		CVersioncheckParser parser;
+		if (parser.Load(hotfix, err))
+		{
+			auto version = parser.GetTortoiseGitVersion();
+			if (version.major == TGIT_VERMAJOR && version.minor == TGIT_VERMINOR && version.micro == TGIT_VERMICRO && version.build > TGIT_VERBUILD)
+				additionalVersionInformation = L"Hotfix " + parser.GetTortoiseGitVersion().version;
+		}
+	}
+#endif
+	if (!additionalVersionInformation.IsEmpty())
+		tortoisegitprocpath.Format(L"(%s; %s)", static_cast<LPCTSTR>(additionalVersionInformation), static_cast<LPCTSTR>(CPathUtils::GetAppDirectory().TrimRight(L'\\')));
+	else
+		tortoisegitprocpath.Format(L"(%s)", static_cast<LPCTSTR>(CPathUtils::GetAppDirectory().TrimRight(L'\\')));
 	temp.Format(IDS_ABOUTVERSION, TGIT_VERMAJOR, TGIT_VERMINOR, TGIT_VERMICRO, TGIT_VERBUILD, static_cast<LPCTSTR>(tortoisegitprocpath), static_cast<LPCTSTR>(out));
 	SetDlgItemText(IDC_VERSIONABOUT, Lf2Crlf(temp));
 

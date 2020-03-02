@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(CTortoiseGitBlameView, CView)
 	ON_WM_ERASEBKGND()
 	ON_NOTIFY(SCN_PAINTED, IDC_SCINTILLA, OnSciPainted)
 	ON_NOTIFY(SCN_GETBKCOLOR, IDC_SCINTILLA, OnSciGetBkColor)
+	ON_NOTIFY(SCN_ZOOM, IDC_SCINTILLA, OnSciZoom)
 	ON_REGISTERED_MESSAGE(m_FindDialogMessage, OnFindDialogMessage)
 END_MESSAGE_MAP()
 
@@ -1712,6 +1713,12 @@ void CTortoiseGitBlameView::OnLButtonDown(UINT nFlags,CPoint point)
 	CView::OnLButtonDown(nFlags,point);
 }
 
+void CTortoiseGitBlameView::OnSciZoom(NMHDR* /*hdr*/, LRESULT* /*result*/)
+{
+	InitialiseEditor();
+	Invalidate();
+}
+
 void CTortoiseGitBlameView::OnSciGetBkColor(NMHDR* hdr, LRESULT* /*result*/)
 {
 	auto notification = reinterpret_cast<SCNotification*>(hdr);
@@ -1825,6 +1832,8 @@ BOOL CTortoiseGitBlameView::PreTranslateMessage(MSG* pMsg)
 {
 	if (m_ToolTip.GetSafeHwnd())
 		m_ToolTip.RelayEvent(pMsg);
+	if (pMsg->message == WM_MOUSEWHEEL)
+		pMsg->hwnd = m_TextView.GetSafeHwnd();
 	return CView::PreTranslateMessage(pMsg);
 }
 

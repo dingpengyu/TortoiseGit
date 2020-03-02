@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -225,7 +225,7 @@ int CGitIndexList::GetFileStatus(CAutoRepository& repository, const CString& git
 		}
 
 		git_oid actual;
-		CStringA fileA = CUnicodeUtils::GetMulti(entry.m_FileName, CP_UTF8);
+		CStringA fileA = CUnicodeUtils::GetUTF8(entry.m_FileName);
 		if (isSymlink && S_ISLNK(entry.m_Mode))
 		{
 			CStringA linkDestination;
@@ -587,7 +587,7 @@ bool CGitHeadFileList::CheckHeadUpdate()
 	return false;
 }
 
-int CGitHeadFileList::ReadTreeRecursive(git_repository& repo, const git_tree* tree, const CStringA& base)
+int CGitHeadFileList::ReadTreeRecursive(git_repository& repo, const git_tree* tree, const CString& base)
 {
 #define S_IFGITLINK	0160000
 	size_t count = git_tree_entrycount(tree);
@@ -603,7 +603,7 @@ int CGitHeadFileList::ReadTreeRecursive(git_repository& repo, const git_tree* tr
 		{
 			CGitTreeItem item;
 			item.m_Hash = git_tree_entry_id(entry);
-			CGit::StringAppend(&item.m_FileName, base, CP_UTF8, base.GetLength());
+			item.m_FileName = base;
 			CGit::StringAppend(&item.m_FileName, git_tree_entry_name(entry), CP_UTF8);
 			if (isSubmodule)
 				item.m_FileName += L'/';
@@ -615,9 +615,9 @@ int CGitHeadFileList::ReadTreeRecursive(git_repository& repo, const git_tree* tr
 		git_tree_entry_to_object(object.GetPointer(), &repo, entry);
 		if (!object)
 			continue;
-		CStringA parent = base;
-		parent += git_tree_entry_name(entry);
-		parent += "/";
+		CString parent = base;
+		CGit::StringAppend(&parent, git_tree_entry_name(entry));
+		parent += L'/';
 		ReadTreeRecursive(repo, reinterpret_cast<git_tree*>(static_cast<git_object*>(object)), parent);
 	}
 
@@ -641,7 +641,7 @@ int CGitHeadFileList::ReadTree(bool ignoreCase)
 	ret = ret && !git_commit_tree(tree.GetPointer(), commit);
 	try
 	{
-		ret = ret && !ReadTreeRecursive(*repository, tree, "");
+		ret = ret && !ReadTreeRecursive(*repository, tree, L"");
 	}
 	catch (const std::bad_alloc& ex)
 	{
@@ -688,7 +688,7 @@ int CGitIgnoreItem::FetchIgnoreList(const CString& projectroot, const CString& f
 		if(start > 0)
 		{
 			base.Truncate(start);
-			this->m_BaseDir = CUnicodeUtils::GetMulti(base, CP_UTF8) + "/";
+			this->m_BaseDir = CUnicodeUtils::GetUTF8(base) + "/";
 		}
 	}
 
@@ -1018,7 +1018,7 @@ int CGitIgnoreList::CheckIgnore(const CString &path, const CString &projectroot,
 	CString temp = CombinePath(projectroot, path);
 	temp.Replace(L'/', L'\\');
 
-	CStringA patha = CUnicodeUtils::GetMulti(path, CP_UTF8);
+	CStringA patha = CUnicodeUtils::GetUTF8(path);
 	patha.Replace('\\', '/');
 
 	int type = 0;

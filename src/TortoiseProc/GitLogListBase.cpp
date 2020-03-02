@@ -250,11 +250,6 @@ CGitLogListBase::~CGitLogListBase()
 	InterlockedExchange(&m_bNoDispUpdates, TRUE);
 	this->m_arShownList.SafeRemoveAll();
 
-	DestroyIcon(m_hModifiedIcon);
-	DestroyIcon(m_hReplacedIcon);
-	DestroyIcon(m_hConflictedIcon);
-	DestroyIcon(m_hAddedIcon);
-	DestroyIcon(m_hDeletedIcon);
 	m_logEntries.ClearAll();
 
 	SafeTerminateThread();
@@ -416,7 +411,8 @@ void CGitLogListBase::InsertGitColumn()
 	SetRedraw(false);
 
 	m_ColumnManager.SetNames(normal, _countof(normal));
-	m_ColumnManager.ReadSettings(m_dwDefaultColumns, hideColumns, m_ColumnRegKey + L"loglist", _countof(normal), with);
+	constexpr int columnVersion = 6; // adjust when changing number/names/etc. of columns
+	m_ColumnManager.ReadSettings(m_dwDefaultColumns, hideColumns, m_ColumnRegKey + L"loglist", columnVersion, _countof(normal), with);
 	m_ColumnManager.SetRightAlign(LOGLIST_ID);
 
 	if (!(hideColumns & GIT_LOG_ACTIONS))
@@ -2760,7 +2756,7 @@ int CGitLogListBase::BeginFetchLog()
 
 	g_Git.m_critGitDllSec.Lock();
 	try {
-		if (git_open_log(&m_DllGitLog, CUnicodeUtils::GetMulti(cmd, CP_UTF8)))
+		if (git_open_log(&m_DllGitLog, CUnicodeUtils::GetUTF8(cmd)))
 		{
 			g_Git.m_critGitDllSec.Unlock();
 			return -1;

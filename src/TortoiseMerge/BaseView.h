@@ -1,5 +1,6 @@
 ﻿// TortoiseGitMerge - a Diff/Patch program
 
+// Copyright (C) 2020 - TortoiseGit
 // Copyright (C) 2003-2015, 2019 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -96,7 +97,7 @@ public: // methods
 	void			SetCaretPosition(const POINT& pt) { SetCaretViewPosition(ConvertScreenPosToView(pt)); }
 	POINT			GetCaretPosition() { return ConvertViewPosToScreen(GetCaretViewPosition()); }
 	void			SetCaretViewPosition(const POINT & pt) { m_ptCaretViewPos = pt; }
-	POINT			GetCaretViewPosition() { return m_ptCaretViewPos; }
+	POINT			GetCaretViewPosition() const { return m_ptCaretViewPos; }
 	void			UpdateCaretPosition(const POINT& pt) { SetCaretPosition(pt); UpdateCaret(); }
 	void			UpdateCaretViewPosition(const POINT& pt) { SetCaretViewPosition(pt); UpdateCaret(); EnsureCaretVisible(); }
 	void			SetCaretToViewStart() { SetCaretToFirstViewLine(); SetCaretToViewLineStart(); }
@@ -106,7 +107,7 @@ public: // methods
 	void			EnsureCaretVisible();
 	void			UpdateCaret();
 
-	bool			ArePointsSame(const POINT &pt1, const POINT &pt2) {return (pt1.x == pt2.x) && (pt1.y == pt2.y); };
+	bool			ArePointsSame(const POINT &pt1, const POINT &pt2) const { return (pt1.x == pt2.x) && (pt1.y == pt2.y); };
 	POINT			SetupPoint(int x, int y) const {POINT ptRet={x, y}; return ptRet; };
 	POINT			ConvertScreenPosToView(const POINT& pt);
 	POINT			ConvertViewPosToScreen(const POINT& pt);
@@ -520,20 +521,20 @@ protected:  // variables
 	bool			m_bWholeWord;
 
 
-	HICON			m_hAddedIcon;
-	HICON			m_hRemovedIcon;
-	HICON			m_hConflictedIcon;
-	HICON			m_hConflictedIgnoredIcon;
-	HICON			m_hWhitespaceBlockIcon;
-	HICON			m_hEqualIcon;
-	HICON			m_hEditedIcon;
+	CAutoIcon m_hAddedIcon;
+	CAutoIcon m_hRemovedIcon;
+	CAutoIcon m_hConflictedIcon;
+	CAutoIcon m_hConflictedIgnoredIcon;
+	CAutoIcon m_hWhitespaceBlockIcon;
+	CAutoIcon m_hEqualIcon;
+	CAutoIcon m_hEditedIcon;
 
-	HICON			m_hLineEndingCR;
-	HICON			m_hLineEndingCRLF;
-	HICON			m_hLineEndingLF;
+	CAutoIcon m_hLineEndingCR;
+	CAutoIcon m_hLineEndingCRLF;
+	CAutoIcon m_hLineEndingLF;
 
-	HICON			m_hMovedIcon;
-	HICON			m_hMarkedIcon;
+	CAutoIcon m_hMovedIcon;
+	CAutoIcon m_hMarkedIcon;
 
 	LOGFONT			m_lfBaseFont;
 	static const int fontsCount = 4;
@@ -654,7 +655,6 @@ protected:  // variables
 
 		int				GetViewLineForScreen(int screenLine);
 		int				GetSubLineOffset(int screenLine);
-		TScreenLineInfo GetScreenLineInfo(int screenLine);
 		int				FindScreenLineForViewLine(int viewLine);
 		void			ScheduleFullRebuild(CViewData * ViewData);
 		void			ScheduleRangeRebuild(CViewData * ViewData, int FirstViewLine, int LastViewLine);

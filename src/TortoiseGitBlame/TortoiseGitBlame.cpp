@@ -26,7 +26,7 @@
 #include "MainFrm.h"
 #include "../version.h"
 #include "../Utils/CrashReport.h"
-
+#include "I18NHelper.h"
 #include "TortoiseGitBlameDoc.h"
 #include "TortoiseGitBlameView.h"
 #include "CmdLineParser.h"
@@ -105,9 +105,7 @@ BOOL CTortoiseGitBlameApp::InitInstance()
 		langDll.Format(L"%sLanguages\\TortoiseGitBlame%ld.dll", static_cast<LPCTSTR>(CPathUtils::GetAppParentDirectory()), langId);
 
 		hInst = LoadLibrary(langDll);
-		CString sVer = _T(STRPRODUCTVER);
-		CString sFileVer = CPathUtils::GetVersionFromFile(langDll);
-		if (sFileVer.Compare(sVer)!=0)
+		if (!CI18NHelper::DoVersionStringsMatch(CPathUtils::GetVersionFromFile(langDll), _T(STRPRODUCTVER)))
 		{
 			FreeLibrary(hInst);
 			hInst = nullptr;
@@ -131,48 +129,6 @@ BOOL CTortoiseGitBlameApp::InitInstance()
 		langStr.Format(L"%ld", langId);
 		CCrashReport::Instance().AddUserInfoToReport(L"LanguageID", langStr);
 	}
-	TCHAR buf[6] = { 0 };
-	wcscpy_s(buf, L"en");
-	langId = loc;
-	CString sHelppath;
-	sHelppath = this->m_pszHelpFilePath;
-	sHelppath = sHelppath.MakeLower();
-	sHelppath.Replace(L".chm", L"_en.chm");
-	free((void*)m_pszHelpFilePath);
-	m_pszHelpFilePath=_wcsdup(sHelppath);
-	sHelppath = CPathUtils::GetAppParentDirectory() + L"Languages\\TortoiseGitBlame_en.chm";
-	do
-	{
-		GetLocaleInfo(MAKELCID(langId, SORT_DEFAULT), LOCALE_SISO639LANGNAME, buf, _countof(buf));
-		CString sLang = L"_";
-		sLang += buf;
-		sHelppath.Replace(L"_en", sLang);
-		if (PathFileExists(sHelppath))
-		{
-			free((void*)m_pszHelpFilePath);
-			m_pszHelpFilePath=_wcsdup(sHelppath);
-			break;
-		}
-		sHelppath.Replace(sLang, L"_en");
-		GetLocaleInfo(MAKELCID(langId, SORT_DEFAULT), LOCALE_SISO3166CTRYNAME, buf, _countof(buf));
-		sLang += L'_';
-		sLang += buf;
-		sHelppath.Replace(L"_en", sLang);
-		if (PathFileExists(sHelppath))
-		{
-			free((void*)m_pszHelpFilePath);
-			m_pszHelpFilePath=_wcsdup(sHelppath);
-			break;
-		}
-		sHelppath.Replace(sLang, L"_en");
-
-		DWORD lid = SUBLANGID(langId);
-		lid--;
-		if (lid > 0)
-			langId = MAKELANGID(PRIMARYLANGID(langId), lid);
-		else
-			langId = 0;
-	} while (langId);
 	setlocale(LC_ALL, "");
 	// We need to explicitly set the thread locale to the system default one to avoid possible problems with saving files in its original codepage
 	// The problems occures when the language of OS differs from the regional settings

@@ -1,17 +1,19 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
-
-#define FILEVER				2,9,0,0
-#define PRODUCTVER			FILEVER
-#define STRFILEVER			"2.9.0.0"
-#define STRPRODUCTVER		STRFILEVER
+// Copyright (C) 2008-2020 - TortoiseGit
 
 #define TGIT_VERMAJOR		2
-#define TGIT_VERMINOR		9
+#define TGIT_VERMINOR		10
 #define TGIT_VERMICRO		0
 #define TGIT_VERBUILD		0
 #define TGIT_VERDATE		__DATE__
+
+#define FILEVER TGIT_VERMAJOR, TGIT_VERMINOR, TGIT_VERMICRO, TGIT_VERBUILD
+#define PRODUCTVER FILEVER
+#define STRINGIFY(A)		#A
+#define MAKEVERSIONSTR(delim, a, b, c, d) STRINGIFY(a) delim STRINGIFY(b) delim STRINGIFY(c) delim STRINGIFY(d)
+#define STRFILEVER			MAKEVERSIONSTR(".", TGIT_VERMAJOR, TGIT_VERMINOR, TGIT_VERMICRO, TGIT_VERBUILD)
+#define STRPRODUCTVER		STRFILEVER
 
 #ifdef _WIN64
 #define TGIT_PLATFORM		"64 Bit"
@@ -20,6 +22,7 @@
 #endif
 
 #define PREVIEW				0
+#define PREVIEW_INFO		"yyyymmdd-hash"
 
 /*
  * TortoiseGit crash handler

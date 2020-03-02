@@ -154,7 +154,7 @@ static CString FindExecutableOnPath(const CString& executable, LPCTSTR env)
 static bool g_bSortLogical;
 static bool g_bSortLocalBranchesFirst;
 static bool g_bSortTagsReversed;
-static git_cred_acquire_cb g_Git2CredCallback;
+static git_credential_acquire_cb g_Git2CredCallback;
 static git_transport_certificate_check_cb g_Git2CheckCertificateCallback;
 
 static void GetSortOptions()
@@ -366,8 +366,8 @@ void CGit::StringAppend(CString* str, const char* p, int code, int length)
 	if (len == 0)
 		return;
 	int currentContentLen = str->GetLength();
-	WCHAR * buf = str->GetBuffer(len * 4 + 1 + currentContentLen) + currentContentLen;
-	int appendedLen = MultiByteToWideChar(code, 0, p, len, buf, len * 4);
+	auto* buf = str->GetBuffer(len * 2 + currentContentLen) + currentContentLen;
+	int appendedLen = MultiByteToWideChar(code, 0, p, len, buf, len * 2);
 	str->ReleaseBuffer(currentContentLen + appendedLen); // no - 1 because MultiByteToWideChar is called with a fixed length (thus no nul char included)
 }
 
@@ -565,10 +565,15 @@ public:
 
 		// Break into lines and feed to m_recv
 		int eolPos;
+		CStringA line;
 		while ((eolPos = m_buffer.Find('\n')) >= 0)
 		{
-			m_recv(m_buffer.Left(eolPos));
-			m_buffer = m_buffer.Mid(eolPos + 1);
+			memcpy(line.GetBuffer(eolPos), static_cast<const char*>(m_buffer), eolPos);
+			line.ReleaseBuffer(eolPos);
+			auto oldLen = m_buffer.GetLength();
+			memmove(m_buffer.GetBuffer(oldLen), static_cast<const char*>(m_buffer) + eolPos + 1, m_buffer.GetLength() - eolPos - 1);
+			m_buffer.ReleaseBuffer(oldLen - eolPos - 1);
+			m_recv(line);
 		}
 		return false;
 	}
@@ -746,7 +751,7 @@ int CGit::SetConfigValue(const CString& key, const CString& value, CONFIG_TYPE t
 		{
 		}
 		CStringA keya, valuea;
-		keya = CUnicodeUtils::GetMulti(key, CP_UTF8);
+		keya = CUnicodeUtils::GetUTF8(key);
 		valuea = CUnicodeUtils::GetUTF8(value);
 
 		try
@@ -798,7 +803,7 @@ int CGit::UnsetConfigValue(const CString& key, CONFIG_TYPE type)
 		{
 		}
 		CStringA keya;
-		keya = CUnicodeUtils::GetMulti(key, CP_UTF8);
+		keya = CUnicodeUtils::GetUTF8(key);
 
 		try
 		{
@@ -1310,8 +1315,7 @@ int CGit::GetTagList(STRING_VECTOR &list)
 
 		for (size_t i = 0; i < tag_names->count; ++i)
 		{
-			CStringA tagName(tag_names->strings[i]);
-			list.push_back(CUnicodeUtils::GetUnicode(tagName));
+			list.push_back(CUnicodeUtils::GetUnicode(tag_names->strings[i]));
 		}
 
 		std::sort(list.begin() + prevCount, list.end(), g_bSortTagsReversed ? LogicalCompareReversedPredicate : LogicalComparePredicate);
@@ -1367,7 +1371,7 @@ CString CGit::GetLibGit2LastErr()
 	const git_error *libgit2err = git_error_last();
 	if (libgit2err)
 	{
-		CString lastError = CUnicodeUtils::GetUnicode(CStringA(libgit2err->message));
+		CString lastError = CUnicodeUtils::GetUnicode(libgit2err->message);
 		git_error_clear();
 		return L"libgit2 returned: " + lastError;
 	}
@@ -1774,8 +1778,7 @@ int CGit::GetRemoteList(STRING_VECTOR &list)
 
 		for (size_t i = 0; i < remotes->count; ++i)
 		{
-			CStringA remote(remotes->strings[i]);
-			list.push_back(CUnicodeUtils::GetUnicode(remote));
+			list.push_back(CUnicodeUtils::GetUnicode(remotes->strings[i]));
 		}
 
 		std::sort(list.begin() + prevCount, list.end(), LogicalComparePredicate);
@@ -2087,13 +2090,13 @@ int CGit::GetBranchDescriptions(MAP_STRING_STRING& map)
 
 static void SetLibGit2SearchPath(int level, const CString &value)
 {
-	CStringA valueA = CUnicodeUtils::GetMulti(value, CP_UTF8);
+	CStringA valueA = CUnicodeUtils::GetUTF8(value);
 	git_libgit2_opts(GIT_OPT_SET_SEARCH_PATH, level, static_cast<LPCSTR>(valueA));
 }
 
 static void SetLibGit2TemplatePath(const CString &value)
 {
-	CStringA valueA = CUnicodeUtils::GetMulti(value, CP_UTF8);
+	CStringA valueA = CUnicodeUtils::GetUTF8(value);
 	git_libgit2_opts(GIT_OPT_SET_TEMPLATE_PATH, static_cast<LPCSTR>(valueA));
 }
 
@@ -2609,9 +2612,9 @@ int CGit::GetOneFile(const CString &Refname, const CTGitPath &path, const CStrin
 		{
 			g_Git.CheckAndInitDll();
 			CStringA ref, patha, outa;
-			ref = CUnicodeUtils::GetMulti(Refname, CP_UTF8);
-			patha = CUnicodeUtils::GetMulti(path.GetGitPathString(), CP_UTF8);
-			outa = CUnicodeUtils::GetMulti(outputfile, CP_UTF8);
+			ref = CUnicodeUtils::GetUTF8(Refname);
+			patha = CUnicodeUtils::GetUTF8(path.GetGitPathString());
+			outa = CUnicodeUtils::GetUTF8(outputfile);
 			::DeleteFile(outputfile);
 			int ret = git_checkout_file(ref, patha, outa.GetBuffer());
 			outa.ReleaseBuffer();
@@ -2847,7 +2850,7 @@ bool CGit::UsingLibGit2(LIBGIT2_CMD cmd) const
 
 void CGit::SetGit2CredentialCallback(void* callback)
 {
-	g_Git2CredCallback = static_cast<git_cred_acquire_cb>(callback);
+	g_Git2CredCallback = static_cast<git_credential_acquire_cb>(callback);
 }
 
 void CGit::SetGit2CertificateCheckCertificate(void* callback)
@@ -2936,8 +2939,8 @@ static int resolve_to_tree(git_repository *repo, const char *identifier, git_tre
 /* use libgit2 get unified diff */
 static int GetUnifiedDiffLibGit2(const CTGitPath& path, const CString& revOld, const CString& revNew, std::function<void(const git_buf*, void*)> statCallback, git_diff_line_cb callback, void* data, bool /* bMerge */, bool bNoPrefix)
 {
-	CStringA tree1 = CUnicodeUtils::GetMulti(revNew, CP_UTF8);
-	CStringA tree2 = CUnicodeUtils::GetMulti(revOld, CP_UTF8);
+	CStringA tree1 = CUnicodeUtils::GetUTF8(revNew);
+	CStringA tree2 = CUnicodeUtils::GetUTF8(revOld);
 
 	CAutoRepository repo(g_Git.GetGitRepository());
 	if (!repo)
@@ -2950,7 +2953,7 @@ static int GetUnifiedDiffLibGit2(const CTGitPath& path, const CString& revOld, c
 		return -1;
 
 	git_diff_options opts = GIT_DIFF_OPTIONS_INIT;
-	CStringA pathA = CUnicodeUtils::GetMulti(path.GetGitPathString(), CP_UTF8);
+	CStringA pathA = CUnicodeUtils::GetUTF8(path.GetGitPathString());
 	char *buf = pathA.GetBuffer();
 	if (!pathA.IsEmpty())
 	{

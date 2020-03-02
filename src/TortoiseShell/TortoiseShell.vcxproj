@@ -52,7 +52,7 @@
       <PreprocessorDefinitions>TSVNSHELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;shlwapi.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>ShellExt.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -110,9 +110,11 @@
     <ClInclude Include="..\TGitCache\CacheInterface.h" />
     <ClInclude Include="..\Utils\CreateProcessHelper.h" />
     <ClInclude Include="..\Utils\DebugOutput.h" />
+    <ClInclude Include="..\Utils\I18NHelper.h" />
     <ClInclude Include="..\Utils\LoadIconEx.h" />
     <ClInclude Include="..\Utils\MiscUI\IconBitmapUtils.h" />
     <ClInclude Include="..\Utils\ReaderWriterLock.h" />
+    <ClInclude Include="..\Utils\SmartHandle.h" />
     <ClInclude Include="GITPropertyPage.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Guids.h" />

@@ -1,6 +1,6 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@
 #include "PathUtils.h"
 #include "DirFileEnum.h"
 #include "../version.h"
+#include "I18NHelper.h"
 #include "Git.h"
 #include "MessageBox.h"
 #include "GitForWindows.h"
@@ -109,11 +110,7 @@ BOOL CSetMainPage::OnInitDialog()
 		CString filename = finder.GetFileName();
 		if (CStringUtils::StartsWithI(filename, L"TortoiseProc"))
 		{
-			CString sVer = _T(STRPRODUCTVER);
-			sVer = sVer.Left(sVer.ReverseFind('.'));
-			CString sFileVer = CPathUtils::GetVersionFromFile(file);
-			sFileVer = sFileVer.Left(sFileVer.ReverseFind('.'));
-			if (sFileVer.Compare(sVer)!=0)
+			if (!CI18NHelper::DoVersionStringsMatch(CPathUtils::GetVersionFromFile(file), _T(STRPRODUCTVER)))
 				continue;
 			CString sLoc = filename.Mid(static_cast<int>(wcslen(L"TortoiseProc")));
 			sLoc = sLoc.Left(sLoc.GetLength() - static_cast<int>(wcslen(L".dll"))); // cut off ".dll"

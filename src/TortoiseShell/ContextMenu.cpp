@@ -1,7 +1,7 @@
 ﻿// TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2003-2012, 2014-2016, 2018 - TortoiseSVN
-// Copyright (C) 2008-2019 - TortoiseGit
+// Copyright (C) 2008-2020 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -136,8 +136,7 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
 										status = git_wc_status_none;
 										continue;
 									}
-									TGITCacheResponse itemStatus;
-									SecureZeroMemory(&itemStatus, sizeof(itemStatus));
+									TGITCacheResponse itemStatus = { 0 };
 									if (m_remoteCacheLink.GetStatusFromRemoteCache(tpath, &itemStatus, true))
 									{
 										fetchedstatus = status = static_cast<git_wc_status_kind>(itemStatus.m_status);
@@ -255,8 +254,7 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
 											status = git_wc_status_none;
 											continue;
 										}
-										TGITCacheResponse itemStatus;
-										SecureZeroMemory(&itemStatus, sizeof(itemStatus));
+										TGITCacheResponse itemStatus = { 0 };
 										if (m_remoteCacheLink.GetStatusFromRemoteCache(tpath, &itemStatus, true))
 										{
 											fetchedstatus = status = static_cast<git_wc_status_kind>(itemStatus.m_status);
@@ -393,8 +391,7 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder, LPDATAOBJECT pDataOb
 							status = git_wc_status_none;
 						else
 						{
-							TGITCacheResponse itemStatus;
-							SecureZeroMemory(&itemStatus, sizeof(itemStatus));
+							TGITCacheResponse itemStatus = { 0 };
 							if (m_remoteCacheLink.GetStatusFromRemoteCache(tpath, &itemStatus, true))
 								status = static_cast<git_wc_status_kind>(itemStatus.m_status);
 						}
@@ -1170,7 +1167,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 
 		if (HIWORD(lpcmi->lpVerb))
 		{
-			auto verb = std::wstring(MultibyteToWide(lpcmi->lpVerb));
+			auto verb = MultibyteToWide(lpcmi->lpVerb);
 			const auto verb_it = myVerbsMap.lower_bound(verb);
 			if (verb_it != myVerbsMap.end() && verb_it->first == verb)
 				idCmd = verb_it->second;
@@ -1729,7 +1726,7 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 				return S_OK;
 			int iconWidth = GetSystemMetrics(SM_CXSMICON);
 			int iconHeight = GetSystemMetrics(SM_CYSMICON);
-			auto hIcon = LoadIconEx(g_hResInst, resource, iconWidth, iconHeight);
+			CAutoIcon hIcon = LoadIconEx(g_hResInst, resource, iconWidth, iconHeight);
 			if (!hIcon)
 				return S_OK;
 			DrawIconEx(lpdis->hDC,
@@ -1737,7 +1734,6 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 				lpdis->rcItem.top + (lpdis->rcItem.bottom - lpdis->rcItem.top - iconHeight) / 2,
 				hIcon, iconWidth, iconHeight,
 				0, nullptr, DI_NORMAL);
-			DestroyIcon(hIcon);
 			*pResult = TRUE;
 		}
 		break;
