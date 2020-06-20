@@ -272,7 +272,6 @@ CGitStatusListCtrl::CGitStatusListCtrl() : CResizableColumnsListCtrl<CListCtrl>(
 	, m_nLineAdded(0)
 	, m_nLineDeleted(0)
 	, m_nBlockItemChangeHandler(0)
-	, m_uiFont(nullptr)
 	, m_bIncludedStaged(false)
 {
 	m_bNoAutoselectMissing = CRegDWORD(L"Software\\TortoiseGit\\AutoselectMissingFiles", FALSE) == TRUE;
@@ -280,13 +279,11 @@ CGitStatusListCtrl::CGitStatusListCtrl() : CResizableColumnsListCtrl<CListCtrl>(
 	NONCLIENTMETRICS metrics = { 0 };
 	metrics.cbSize = sizeof(NONCLIENTMETRICS);
 	SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, FALSE);
-	m_uiFont = CreateFontIndirect(&metrics.lfMessageFont);
+	m_uiFont.CreateFontIndirect(&metrics.lfMessageFont);
 }
 
 CGitStatusListCtrl::~CGitStatusListCtrl()
 {
-	if (m_uiFont)
-		DeleteObject(m_uiFont);
 	ClearStatusArray();
 }
 
@@ -330,6 +327,13 @@ void CGitStatusListCtrl::Init(DWORD dwColumns, const CString& sColumnInfoContain
 	CResizableColumnsListCtrl::Init();
 
 	SetWindowTheme(m_hWnd, L"Explorer", nullptr);
+
+	if (CRegDWORD(L"Software\\TortoiseGit\\LogFontForFileListCtrl", FALSE))
+	{
+		m_uiFont.DeleteObject();
+		CAppUtils::CreateFontForLogs(m_uiFont);
+		SetFont(&m_uiFont);
+	}
 
 	m_nIconFolder = SYS_IMAGE_LIST().GetDirIconIndex();
 	m_nRestoreOvl = SYS_IMAGE_LIST().AddIcon(CCommonAppUtils::LoadIconEx(IDI_RESTOREOVL, 0, 0));
